@@ -11,13 +11,22 @@ import Avatar from '@mui/material/Avatar';
 import Button from '@mui/material/Button';
 import Tooltip from '@mui/material/Tooltip';
 import MenuItem from '@mui/material/MenuItem';
+import Divider from '@mui/material/Divider';
 import AdbIcon from '@mui/icons-material/Adb';
+import LogoutIcon from '@mui/icons-material/Logout';
+import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import HomeIcon from '@mui/icons-material/Home';
+import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import AnalyticsIcon from '@mui/icons-material/Analytics';
+import { red } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
+import { Link } from 'react-router-dom';
 
 
-const pages = ['Products', 'Pricing', 'Blog'];
-const settings = ['Profile', 'Account', 'Dashboard', 'Logout'];
+
+const pages = ['Home', 'Library', 'Reports'];
+const settings = ['Profile', 'Sign out'];
 
 function ResponsiveAppBar() {
 
@@ -78,7 +87,8 @@ function ResponsiveAppBar() {
         <Container maxWidth="xl" color="primary light">
             <Toolbar disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
-          <Typography
+            
+          <Typography component={Link} to='/'
             variant="h6"
             noWrap
             component="a"
@@ -93,8 +103,9 @@ function ResponsiveAppBar() {
               textDecoration: 'none',
             }}
           >
-            LOGO
+            BLASK
           </Typography>
+          
 
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                 <IconButton
@@ -125,11 +136,19 @@ function ResponsiveAppBar() {
                     display: { xs: 'block', md: 'none' },
                 }}
                 >
-                {pages.map((page) => (
-                    <MenuItem key={page} onClick={handleCloseNavMenu}>
-                    <Typography textAlign="center">{page}</Typography>
+                    <MenuItem component={Link} to='/' key={pages[0]} onClick={handleCloseNavMenu}>
+                        <HomeIcon sx={{ mr: 1 , fontSize:'medium'}} />
+                        <Typography textAlign="center">{pages[0]}</Typography>
                     </MenuItem>
-                ))}
+                    <MenuItem component={Link} to='library' key={pages[1]} onClick={handleCloseNavMenu}>
+                        <LibraryBooksIcon sx={{ mr: 1 , fontSize:'medium'}} />
+                        <Typography textAlign="center">{pages[1]}</Typography>
+                    </MenuItem>
+                    <MenuItem component={Link} to='reports' key={pages[2]} onClick={handleCloseNavMenu}>
+                        <AnalyticsIcon sx={{ mr: 1 , fontSize:'medium'}} />
+                        <Typography textAlign="center">{pages[2]}</Typography>
+                    </MenuItem>
+
                 </Menu>
             </Box>
             <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
@@ -149,18 +168,36 @@ function ResponsiveAppBar() {
                 textDecoration: 'none',
                 }}
             >
-                LOGO
+                BLASK
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                {pages.map((page) => (
                 <Button
-                    key={page}
+                    component={Link} to='/'
+                    key={pages[0]}
                     onClick={handleCloseNavMenu}
-                    sx={{ my: 2, color: 'white', display: 'block' }}
+                    sx={{ my: 2, color: 'white', display: 'flex' }}
                 >
-                    {page}
+                    <HomeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 , fontSize:'medium'}} />
+                    {pages[0]}
                 </Button>
-                ))}
+                <Button
+                    key={pages[1]}
+                    component={Link} to='library'
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: 'white', display: 'flex' }}
+                >
+                    <LibraryBooksIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, fontSize:'medium' }} />
+                    {pages[1]}
+                </Button>
+                <Button
+                    component={Link} to='reports'
+                    key={pages[2]}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: 'white', display: 'flex' }}
+                >
+                    <AnalyticsIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 , fontSize:'medium'}} />
+                    {pages[2]}
+                </Button>
             </Box>
 
             {login ? (<Box sx={{ flexGrow: 0 }}>
@@ -185,16 +222,23 @@ function ResponsiveAppBar() {
                 open={Boolean(anchorElUser)}
                 onClose={handleCloseUserMenu}
                 >
-                {settings.map((setting) => (
-                    <MenuItem key={setting} onClick={handleClickOnUserMenu}>
-                    <Typography textAlign="center" >{setting}</Typography>
+                
+                    <MenuItem component={Link} to='profile' key={settings[0]} onClick={handleClickOnUserMenu}>
+                        <AccountCircleIcon color='success' sx={{ mr: 1 }}/>            
+                        <Typography textAlign="center" >{settings[0]}</Typography>
+        
                     </MenuItem>
-                ))}
+                    <Divider/>
+                    <MenuItem key={settings[1]} onClick={handleClickOnUserMenu}>
+                        <LogoutIcon sx={{mr: 1 , color: red[500]}} /> 
+                        <Typography textAlign="center" >{settings[1]}</Typography>
+                    </MenuItem>
+                
                 </Menu>
             </Box>)
             : <Box sx={{ flexGrow: 0 }}>
-                <Button variant="contained" color="success" sx={{m: 1}}>Sign Up</Button>
-                <Button variant="text" color="inherit" onClick={handleLogin}>Log In</Button>
+                <Button component={Link} to='signup' variant="contained" color="success" sx={{m: 1}}>Sign Up</Button>
+                <Button component={Link} to='login' variant="text" color="inherit" onClick={handleLogin}>Log In</Button>
             </Box>}
             </Toolbar>
         </Container>
