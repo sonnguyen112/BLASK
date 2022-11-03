@@ -1,7 +1,7 @@
 version: '3'
 services:
   api:
-    build: .
+    build: BLASK_server
     depends_on:
       - postgres
     ports:
