@@ -85,7 +85,7 @@ function ResponsiveAppBar() {
         <ThemeProvider theme={theme}>
         <AppBar position="static">
         <Container maxWidth="xl" color="primary light">
-            <Toolbar disableGutters>
+            <Toolbar id="back-to-top-anchor" disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
             
           <Typography component={Link} to='/'
