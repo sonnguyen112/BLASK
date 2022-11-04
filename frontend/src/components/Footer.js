@@ -16,9 +16,9 @@ import teamData from '../data/TeamData.js'
 function Footer() {
     const teamElement = teamData.map(data => {
         return (
-            <ListItem dense disablePadding>
+            <ListItem dense key={data.id}>
                 <ListItemIcon>
-                    <IconButton aria-label='facebook' href={data.link} target="_blank" sx={{color:'white'}} disablePadding>
+                    <IconButton aria-label='facebook' href={data.link} target="_blank" sx={{color:'white'}}>
                         <FacebookIcon />
                     </IconButton>
                 </ListItemIcon>
@@ -56,7 +56,7 @@ function Footer() {
                             Ho Chi Minh City University of Science
                         </Typography>
                         </ListItemText>
-                        <ListItem dense disablePadding>
+                        <ListItem >
                         <ListItemIcon>
                             <IconButton aria-label='github' href='https://github.com/sonnguyen112/BLASK' target="_blank" sx={{color:'white'}}>
                                 <GitHubIcon />
@@ -78,16 +78,16 @@ function Footer() {
                         Information
                 </Typography>
                 <List disablePadding>
-                    <ListItemText>
+                    <ListItemText key='1'>
                         <Link color="inherit" variant="body2" underline="hover">Terms and conditions</Link>
                     </ListItemText>
-                    <ListItemText>
+                    <ListItemText key='2'>
                         <Link color="inherit" variant="body2" underline="hover">Privacy policy</Link>
                     </ListItemText>
-                    <ListItemText>
+                    <ListItemText key='3'>
                         <Link color="inherit" variant="body2" underline="hover">Student privacy policy</Link>
                     </ListItemText>
-                    <ListItemText>
+                    <ListItemText key='4'>
                         <Link color="inherit" variant="body2" underline="hover">Acceptable use policy</Link>
                     </ListItemText> 
                        

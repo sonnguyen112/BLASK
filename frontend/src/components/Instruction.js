@@ -10,7 +10,7 @@ function Instruction()
 {
     const cardElement = cardData.map(data => {
         return (
-          <Grid item m={3}>
+          <Grid item m={3} key={data.id}>
             <CardHome {...data}/>
           </Grid>
         )
