@@ -85,7 +85,7 @@ function ResponsiveAppBar() {
         <ThemeProvider theme={theme}>
         <AppBar position="static">
         <Container maxWidth="xl" color="primary light">
-            <Toolbar disableGutters>
+            <Toolbar id="back-to-top-anchor" disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
             
           <Typography component={Link} to='/'
@@ -103,7 +103,7 @@ function ResponsiveAppBar() {
           >
             BLASK
           </Typography>
-          
+          <Divider orientation="vertical" variant="middle" sx={{display:{xs:'none', md: 'flex'}}} flexItem/>
 
             <Box sx={{ flexGrow: 1, display: { xs: 'flex', md: 'none' } }}>
                 <IconButton
@@ -153,8 +153,7 @@ function ResponsiveAppBar() {
             <Typography
                 variant="h5"
                 noWrap
-                component="a"
-                href=""
+                component={Link} to='/'
                 sx={{
                 mr: 2,
                 display: { xs: 'flex', md: 'none' },
@@ -198,7 +197,10 @@ function ResponsiveAppBar() {
                 </Button>
             </Box>
 
-            {login ? (<Box sx={{ flexGrow: 0 }}>
+
+            {login ? (<><Button color='secondary' variant='contained' sx={{ my: 2, display: 'flex' , mr:1}}>Create</Button>
+            <Box sx={{ flexGrow: 0 }}>
+                
                 <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
                     <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
@@ -233,7 +235,7 @@ function ResponsiveAppBar() {
                     </MenuItem>
                 
                 </Menu>
-            </Box>)
+            </Box></>)
             : <Box sx={{ flexGrow: 0 }}>
                 <Button component={Link} to='signup' variant="contained" color="success" sx={{m: 1}}>Sign Up</Button>
                 <Button component={Link} to='login' variant="text" color="inherit" onClick={handleLogin}>Log In</Button>
