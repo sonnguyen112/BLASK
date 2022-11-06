@@ -2,7 +2,7 @@
 
 function BLASKItem(props) {
     return (
-        <div className="blask-item">
+        <div width="1" className="blask-item">
             <div className="abc">
                 <div>
                     <div className="blask-checkbox">
@@ -12,23 +12,41 @@ function BLASKItem(props) {
                 </div>
             </div>
             <div className="blask-image">
-                <img 
-                    src={props.image} 
-                    alt=""
-                />
+                <img src={props.image}
+                alt=""/>
             </div>
-            <div className="blask-info">
-                <div className="blask-header">
-                    <h2>{props.title || "One of your quiz"}</h2>
+            <div width="1" className="blask-info">
+                <div width="1" className="blask-header">
+                    <div className="blask-title">{props.title || "One of your quiz"}</div>
+                    <div className="blask-utils-btn">
+                        <div>
+                            <button className="btn"><i class="fa fa-home"></i></button>
+                        </div>
+                        <div>
+                            <button className="btn"><i class="fa fa-home"></i></button>
+                        </div>
+                    </div>
                 </div>
                 
                 <div className="blask-footer">
-                    <img 
-                        src={props.avatar} 
-                        alt="" 
-                        className="blask-avatar"
-                    />
-                    <h4 className="blask-author">{props.author || "You" }</h4>
+                    <div className="blask-author">
+                        <img 
+                            src={props.avatar} 
+                            alt="" 
+                            className="blask-avatar"
+                        />
+                        {props.author || "You" }
+                    </div>
+                    <div className="blask-edit-info">
+                        <div>
+                            <button className="blask-start-btn" type="Start" value="Start">Start</button>
+                        </div>
+                        <div >
+                            <button className="blask-assign-btn" type="Assign" value="Assign">Assign</button>
+                        </div>
+                        
+                        <span>{props.edit_time || ""}</span>
+                    </div>
                 </div>
             </div>
         </div>
