@@ -6,9 +6,11 @@
     width: 100%;
     display: flex;
     box-shadow: 0 4px 8px 0 rgba(0, 0, 0, 0.2), 0 6px 20px 0 rgba(0, 0, 0, 0.19);
-    border-radius: 1rem;
+    border-radius: 4px;
     margin: 2rem 0px;
     position: relative;
+    -webkit-box-align: stretch;
+    align-items: stretch;
     transition: 0.5s;
 }
 .blask-item:hover{
@@ -16,7 +18,7 @@
 }
 .abc{
     width: 2rem;
-    padding: 4rem 0px;
+    padding: 3rem 0px;
 }
 .blask-checkbox{
     display: flex;
@@ -31,33 +33,107 @@
     border: 1px solid rgb(110, 110, 110);
     cursor: pointer
 }
-.blask-image{
-    width: 250px;
+.blask-image {
+    position: relative;
+    background-repeat: no-repeat, no-repeat;
+    background-size: cover, cover;
+    flex-shrink: 0;
 }
-.blask-image img{
-    width: 100%;
-    height: 100%;
+.blask-image img {
+    width: 176px;
+    height: 120px;
     object-fit: cover;
 }
 .blask-info {
-    height: 100%;
+    display: flex;
+    min-width: 0px;
+    width: 100%;
+    -webkit-box-align: stretch;
+    align-items: stretch;
+    flex-direction: column;
+    -webkit-box-pack: justify;    
+    justify-content: space-between;
+}
+.blask-header {
+    display: flex;
+    padding-top: 10px;
+    flex-direction: row;
+    vertical-align: baseline;
+    margin: 0px;
+    align-items: center;
     justify-content: space-between;
 }
 .blask-title {
     font-size: 18px;
-    margin-bottom: 10px;
+    margin: 0px;
+}
+.blask-utils-btn {
+    display: inline-flex;
+    margin: 10px;
+    align-self: baseline;
+    align-items: center;
+}
+.btn{
+    width: 32px;
+    height: 32px;
+    border: 0px;
+    cursor: pointer;
 }
 .blask-footer {
     display: flex;
-    align-items: center;
-    margin-bottom: 0px;
+    margin-left: 2px;
+    margin-bottom: 3px;
+    flex-direction: row;    
+    align-items: stretch;
+    justify-content: space-between;
+    vertical-align: baseline;
+}
+.blask-author {
+    display: flex;
+    margin: 0px;
 }
 .blask-avatar {
-    width: 50px;
-    height: 50px;
-    border-radius: 100rem;
-    object-fit: cover;
-    flex-shrink: 0;
+    display: flex; 
+    vertical-align: middle;
+    width: 32px;
+    height: 32px;
+}
+.blask-edit-info {
+    display: flex;
+    margin: 0px;
+    border: 0px;
+    padding: 0px;
+    min-width: 0px;
+    flex-flow: row-reverse wrap;
+}
+.blask-edit-info button {
+    height: 100%;
+    width: 70px;
+    font-family: "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    font-weight: bold;
+    font-size: 0.87rem;
+    margin: 0px 0.3rem;
+    border-radius: 4px;
+    border: 0px;
+    vertical-align: baseline;
+    cursor: pointer;
+}
+.blask-start-btn {
+    background-color: #1368ce;
+    color: #fff
+}
+.blask-start-btn:hover {
+    background-color: rgb(18, 96, 190);;
+}
+.blask-assign-btn {
+    background-color: rgb(242, 242, 242);
+}
+.blask-assign-btn:hover {
+    background-color: rgb(223, 223, 223);;
+}
+
+.blask-edit-info p {
+    white-space: nowrap;
 }
 * {
     scroll-behavior: smooth;
