@@ -1,6 +1,6 @@
 FROM python:3.9.7
 
-WORKDIR /usr/src/app
+WORKDIR /home/BLASK/
 
 COPY requirements.txt .
 
@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "BLASK_server//manage.py", "runserver", "0.0.0.0:8000"]
+CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
