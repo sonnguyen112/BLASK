@@ -6,19 +6,21 @@ import uuid
 class Quiz(models.Model):
     createAt = models.DateTimeField(auto_now_add = True)
     updateAt = models.DateTimeField(auto_now = True)
-    # User = models.ForeignKey(User, on_delete=models.CASCADE)
+    title = models.CharField(max_length=100, null = True)#null
+    description = models.TextField(null = True, blank = True)
+    userOf = models.ForeignKey(User, on_delete=models.CASCADE, null=True)
 
 class Question(models.Model):
-    type = models.CharField(max_length=100)
-    description = models.TextField()
+    description = models.TextField(null = True, blank = True)
     time = models.TimeField()
-    # image = models.ImageField()
+    image = models.FileField(upload_to= "QuestionImage", blank = True)
     score = models.IntegerField()
-    quizId = models.ForeignKey(Quiz, on_delete=models.CASCADE )
+    quizOf = models.ForeignKey(Quiz, on_delete=models.CASCADE, null = True )
+    numberOfAnswer= models.IntegerField(default = 0)
 
 class Option(models.Model):
-    content =  models.TextField()
-    # image = models.ImageField()
-    questionId = models.ForeignKey(Question, on_delete=models.CASCADE )
-
+    content =  models.TextField(null = True, blank = True)
+    image = models.FileField(upload_to= "OptionImage", blank = True)
+    questionOf = models.ForeignKey(Question, on_delete=models.CASCADE, null= True )
+    isTrue = models.BooleanField(default=False)
 
