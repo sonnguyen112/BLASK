@@ -2,7 +2,7 @@ import video1 from '../assets/videos/create.webm'
 import video2 from '../assets/videos/host.webm'
 import video3 from '../assets/videos/play.webm'
 
-export default [
+const data = [
     {
         id: 1,
         name: 'Create',
@@ -22,3 +22,4 @@ export default [
         video: video3,
     }
 ]
+export default data;
