@@ -23,6 +23,7 @@ import { red } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import { Link } from 'react-router-dom';
+import '../style/navbav.css'
 
 
 
@@ -173,7 +174,8 @@ function ResponsiveAppBar() {
                 BLASK
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                <Button
+                <Button 
+                    className='underline-button'
                     component={Link} to='/'
                     key={pages[0]}
                     onClick={handleCloseNavMenu}
@@ -182,7 +184,8 @@ function ResponsiveAppBar() {
                     <HomeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 , fontSize:'medium'}} />
                     {pages[0]}
                 </Button>
-                <Button
+                <Button 
+                    className='underline-button'
                     key={pages[1]}
                     component={Link} to='library'
                     onClick={handleCloseNavMenu}
@@ -191,7 +194,8 @@ function ResponsiveAppBar() {
                     <LibraryBooksIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, fontSize:'medium' }} />
                     {pages[1]}
                 </Button>
-                <Button
+                <Button 
+                    className='underline-button'
                     component={Link} to='reports'
                     key={pages[2]}
                     onClick={handleCloseNavMenu}
