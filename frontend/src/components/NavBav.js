@@ -205,6 +205,7 @@ function ResponsiveAppBar() {
                     {pages[2]}
                 </Button>
                 <Button
+                    className='underline-button'
                     component={Link} to='minigame'
                     key={pages[3]}
                     onClick={handleCloseNavMenu}
