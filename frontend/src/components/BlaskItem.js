@@ -20,10 +20,10 @@ function BLASKItem(props) {
                     <div className="blask-title">{props.title || "One of your quiz"}</div>
                     <div className="blask-utils-btn">
                         <div>
-                            <button className="btn"><i class="fa fa-home"></i></button>
+                            <button className="btn"><i class="fa-solid fa-pencil"></i></button>
                         </div>
                         <div>
-                            <button className="btn"><i class="fa fa-home"></i></button>
+                            <button className="btn"><i class="fa-solid fa-ellipsis-vertical"></i></button>
                         </div>
                     </div>
                 </div>

@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import Reports from "./pages/Reports";
 import Signup from "./pages/Signup";
 import NoPage from "./pages/NoPage";
+import Minigame from "./pages/Minigame";
 import './App.css'
 
 const App = () => {
@@ -27,6 +28,7 @@ const App = () => {
                 <Route path="signup" element={<Signup />} />
                 <Route path="login" element={<Login />} />
                 <Route path="profile" element={<Profile />} />
+                <Route path="minigame" element={<Minigame />} />
                 <Route path="*" element={<NoPage />} />
             </Routes>
         </BrowserRouter>

@@ -18,6 +18,7 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { red } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
@@ -25,7 +26,7 @@ import { Link } from 'react-router-dom';
 
 
 
-const pages = ['Home', 'Library', 'Reports'];
+const pages = ['Home', 'Library', 'Reports', 'Minigame'];
 const settings = ['Profile', 'Sign out'];
 
 function ResponsiveAppBar() {
@@ -146,6 +147,10 @@ function ResponsiveAppBar() {
                         <AnalyticsIcon sx={{ mr: 1 , fontSize:'medium'}} />
                         <Typography textAlign="center">{pages[2]}</Typography>
                     </MenuItem>
+                    <MenuItem component={Link} to='minigame' key={pages[3]} onClick={handleCloseNavMenu}>
+                        <SportsEsportsIcon sx={{ mr: 1 , fontSize:'medium'}} />
+                        <Typography textAlign="center">{pages[3]}</Typography>
+                    </MenuItem>
 
                 </Menu>
             </Box>
@@ -194,6 +199,15 @@ function ResponsiveAppBar() {
                 >
                     <AnalyticsIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 , fontSize:'medium'}} />
                     {pages[2]}
+                </Button>
+                <Button
+                    component={Link} to='minigame'
+                    key={pages[3]}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: 'white', display: 'flex' }}
+                >
+                    <SportsEsportsIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 , fontSize:'medium'}} />
+                    {pages[3]}
                 </Button>
             </Box>
 

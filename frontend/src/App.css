@@ -72,6 +72,7 @@
     margin: 10px;
     align-self: baseline;
     align-items: center;
+    vertical-align: baseline;
 }
 .btn{
     width: 32px;
