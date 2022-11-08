@@ -18,14 +18,16 @@ import AccountCircleIcon from '@mui/icons-material/AccountCircle';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
+import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { red } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 
 import { Link } from 'react-router-dom';
+import '../style/navbav.css'
 
 
 
-const pages = ['Home', 'Library', 'Reports'];
+const pages = ['Home', 'Library', 'Reports', 'Minigame'];
 const settings = ['Profile', 'Sign out'];
 
 function ResponsiveAppBar() {
@@ -85,7 +87,7 @@ function ResponsiveAppBar() {
         <ThemeProvider theme={theme}>
         <AppBar position="static">
         <Container maxWidth="xl" color="primary light">
-            <Toolbar disableGutters>
+            <Toolbar id="back-to-top-anchor" disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
             
           <Typography component={Link} to='/'
@@ -146,6 +148,10 @@ function ResponsiveAppBar() {
                         <AnalyticsIcon sx={{ mr: 1 , fontSize:'medium'}} />
                         <Typography textAlign="center">{pages[2]}</Typography>
                     </MenuItem>
+                    <MenuItem component={Link} to='minigame' key={pages[3]} onClick={handleCloseNavMenu}>
+                        <SportsEsportsIcon sx={{ mr: 1 , fontSize:'medium'}} />
+                        <Typography textAlign="center">{pages[3]}</Typography>
+                    </MenuItem>
 
                 </Menu>
             </Box>
@@ -168,7 +174,8 @@ function ResponsiveAppBar() {
                 BLASK
             </Typography>
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
-                <Button
+                <Button 
+                    className='underline-button'
                     component={Link} to='/'
                     key={pages[0]}
                     onClick={handleCloseNavMenu}
@@ -177,7 +184,8 @@ function ResponsiveAppBar() {
                     <HomeIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 , fontSize:'medium'}} />
                     {pages[0]}
                 </Button>
-                <Button
+                <Button 
+                    className='underline-button'
                     key={pages[1]}
                     component={Link} to='library'
                     onClick={handleCloseNavMenu}
@@ -186,7 +194,8 @@ function ResponsiveAppBar() {
                     <LibraryBooksIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1, fontSize:'medium' }} />
                     {pages[1]}
                 </Button>
-                <Button
+                <Button 
+                    className='underline-button'
                     component={Link} to='reports'
                     key={pages[2]}
                     onClick={handleCloseNavMenu}
@@ -194,6 +203,16 @@ function ResponsiveAppBar() {
                 >
                     <AnalyticsIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 , fontSize:'medium'}} />
                     {pages[2]}
+                </Button>
+                <Button
+                    className='underline-button'
+                    component={Link} to='minigame'
+                    key={pages[3]}
+                    onClick={handleCloseNavMenu}
+                    sx={{ my: 2, color: 'white', display: 'flex' }}
+                >
+                    <SportsEsportsIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 , fontSize:'medium'}} />
+                    {pages[3]}
                 </Button>
             </Box>
 
