@@ -3,7 +3,8 @@ from .serializer import *
 from .models import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
-
+from django.core import serializers
+from django.http import JsonResponse
 @api_view(["GET","POST","PUT","DELETE"])
 def quiz(request):
     if request.method == 'GET':
@@ -32,50 +33,86 @@ def quiz(request):
         })
 
 
+#QUIZ############################################################################################################################################################################################################################################
 
-#create quiz 
+#CREATE QUIZ
 @api_view(['POST'])
 @permission_classes([IsAuthenticated])
 def create_quiz(request):
     try: 
         data =request.data
-        data["userOf"] = request.user.id
-        serializer = QuizSerializer(data = data)
-        if serializer.is_valid():
-            serializer.save()
+        dataQuiz = {'title':data['title'],'description':data['description'],'userOf':request.user.id}
+        serializerQuiz = QuizSerializer(data = dataQuiz)
+        if serializerQuiz.is_valid():
+            serializerQuiz.save()
+        else:
             return Response({
-                'status' : "True",
-                'message' : 'Success to create a quiz',
-                'data': serializer.data 
-            })
+                        'status' : "False",
+                        'message' : 'Fail to create quiz at Quiz',
+                    })
+        if 'questions' in data:
+            dataQuestionArray = data['questions']
+            for i in range(len(dataQuestionArray)):
+                dataSubQuestion = {
+                    'numberOfAnswer':dataQuestionArray[i]['num_of_answer'],
+                    'quizOf':serializerQuiz.data['id'],
+                    'score':dataQuestionArray[i]['point'],
+                    'numOfSecond': dataQuestionArray[i]['time']
+                }
+                serializerQuestion=QuestionSerializer(data=dataSubQuestion)   
+                if serializerQuestion.is_valid():
+                    serializerQuestion.save()
+                else:
+                    return Response({
+                                'status' : "False",
+                                'message' : 'Fail to create quiz at Question',
+                            })
+                if 'options' in dataQuestionArray[i]:
+                    dataOptionArray =dataQuestionArray[i]['options']
+                    for j in range(len(dataOptionArray)):
+                        dataSubOption = {
+                            'content' : dataOptionArray[j]['content'],
+                            'isTrue' : dataOptionArray[j]['is_true'],
+                            'questionOf' : serializerQuestion.data['id']
+                        }   
+                        serializerOption = OptionSerializer (data = dataSubOption)
+                        if serializerOption.is_valid():
+                            serializerOption.save()
+                        else:
+                            return Response({
+                                        'status' : "False",
+                                        'message' : 'Fail to create quiz at Option',
+                                    })
         return Response({
-                'status' : "False",
-                'message' : 'Fail to create quiz',
-                'data': serializer.errors
-            })
+                        'status' : "True",
+                        'message' : 'Success to create quiz',
+                    })
     except Exception as e:
         print(e)
         return Response({
             'status' : "False",
-            'message' : 'Something went wrong'
+            'message' : str(e)
         })  
-#get quiz 
 
-
+#GET ALL QUIZ
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_all_quiz(request):
-    quiz_objs = Quiz.objects.all()
-    serializer = QuizSerializer(quiz_objs)
-    return Response({
-                'status' : "True",
-                'message' : 'Access to get your quiz',
-                'data': serializer.data
-            })
+        quiz_objs = Quiz.objects.filter(userOf= request.user.id)
+        userObj = User.objects.get(id = request.user.id)
+        serializer = QuizSerializer(quiz_objs,many = True)
+        return Response({
+                    'status' : "True",
+                    'message' : 'Access to get your quiz',
+                    'username': userObj.username,
+                    'data': serializer.data
+                })
+
+    
 
 
 
-#get_one_quiz
+#GET ONE QUIZ
 @api_view(['GET'])
 @permission_classes([IsAuthenticated])
 def get_one_quiz(request,id):
@@ -86,50 +123,150 @@ def get_one_quiz(request,id):
                 'message' : 'The quiz is required',
                 'data': {}
             })
-        quiz_objs = Quiz.objects.get( id = id)
-        serializer = QuizSerializer(quiz_objs,many=False)
+        userObj = User.objects.get(id = request.user.id)
+        quizObj = Quiz.objects.get(id = id )
+        objQuestion = Question.objects.filter(quizOf=id)
+        listQuestion = []
+        for i in objQuestion:
+            objOption=Option.objects.filter(questionOf=i.id)
+            listOption = []
+            for j in objOption :
+                listOption.append({
+                    'id' : j.id,
+                    'content' : j.content,
+                    'isTrue' : j.isTrue
+                })
+            listQuestion.append({
+                'id' : i.id,
+                'description' : i.description,
+                'score' : i.score,
+                'numOfSecond' : i.numOfSecond,
+                'numberOfAnswer': i.numberOfAnswer,
+                'options': listOption
+            })
         return Response({
-        'status' : "True",
-        'message' : "Access to get your quiz",
-        'data': serializer.data
-        })
+            "id" : quizObj.id,
+            "title" : quizObj.title,
+            "description" : quizObj.description,
+            "username" : userObj.username,
+            "questions":listQuestion
+            })  
+      
+        
+        
+
     except Exception as e:
         print(e)
         return Response({
-            'status' : "False",
-            'message' : 'Something went wrong'
+           "data" : "hello",
+           "erros" : str(e)
         })  
 
 
 
-#update quiz 
+#UPDATE QUIZ
 @api_view(['PATCH'])
 @permission_classes([IsAuthenticated])
 def update_quiz(request,id):
     try:
-        data = request.data
-        obj = Quiz.objects.get(id=id)
-        serializer = QuizSerializer(obj, data = data, partial = True)
-        if serializer.is_valid():
+        if not id:
             return Response({
-                'status' : "True",
-                'message' : 'Success to update the quiz',
-                'data': serializer.data
-            })
-        return Response({
                 'status' : "False",
-                'message' : 'Fail to update the quiz',
-                'data': serializer.errors
+                'message' : 'The quiz is required',
+                'data': {}
             })
-    except Exception as e:
-        print(e)
+        data = request.data
+        if 'title' in data:
+            dataQuiz = {'title':data['title'],'description':data['description'],'userOf':request.user.id}
+        else :
+            dataQuiz = {'description':data['description'],'userOf':request.user.id}
+        objQuiz = Quiz.objects.get(id=id)
+        serializerQuiz = QuizSerializer(objQuiz, data = dataQuiz, partial = True)
+        if serializerQuiz.is_valid():
+            serializerQuiz.save()
+        else:
+            return Response({
+                        'status' : "False",
+                        'message' : 'Fail to create quiz',
+                    })
+        if 'questions' in data:
+            dataQuestionArray = data['questions']
+            for i in range(len(dataQuestionArray)):
+                dataSubQuestion = {
+                    'numberOfAnswer':dataQuestionArray[i]['num_of_answer'],
+                    'quizOf':serializerQuiz.data['id'],
+                    'score':dataQuestionArray[i]['point'],
+                    'numOfSecond': dataQuestionArray[i]['time']
+                }
+            objQuestion = Question.objects.get(id=serializerQuiz.data['id'])
+            serializerQuestion=QuestionSerializer(objQuestion,data=dataSubQuestion, partial = True)
+            if serializerQuestion.is_valid():
+                serializerQuestion.save()
+            else:
+                return Response({
+                            'status' : "False",
+                            'message' : 'Fail to update quiz',
+                        })
+            if 'options' in dataQuestionArray[i]:
+                dataOptionArray =dataQuestionArray[i]['options']
+                for j in range(len(dataOptionArray)):
+                    dataSubOption = {
+                        'content' : dataOptionArray[j]['content'],
+                        'isTrue' : dataOptionArray[j]['is_true'],
+                        'questionOf' : serializerQuestion.data['id']
+                    }   
+                    objOption = Option.objects.get(id=serializerQuestion.data['id'])
+                    serializerOption = OptionSerializer (data = dataSubOption)
+                    if serializerOption.is_valid():
+                        serializerOption.save()
+                    else:
+                        return Response({
+                                'status' : "False",
+                                'message' : 'Fail to update quiz',
+                            })
         return Response({
-            'status' : "False",
-            'message' : 'Something went wrong'
-        })  
+                        'status' : "True",
+                        'message' : 'Success to update quiz',
+                    })
+    except Exception as e:
+            print(e)
+            return Response({
+                'status' : "False",
+                'message' : str(e)
+            })  
+    # try:
+    #     if not id:
+    #         return Response({
+    #             'status' : "False",
+    #             'message' : 'The quiz is required',
+    #             'data': {}
+    #         })
+    #     data = request.data
+    #     obj = Quiz.objects.get(id=id)
+    #     serializer = QuizSerializer(obj, data = data, partial = True)
+    #     if serializer.is_valid():
+    #         serializer.save()
+    #         return Response({
+    #             'status' : "True",
+    #             'message' : 'Success to update the quiz',
+    #             'data': serializer.data
+    #         })
+    #     return Response({
+    #             'status' : "False",
+    #             'message' : 'Fail to update the quiz',
+    #             'data': serializer.errors
+    #         })
+    # except Exception as e:
+    #     print(e)
+    #     return Response({
+    #         'status' : "False",
+    #         'message' : str(e)
+    #     })  
 
 
-# delete_one_quiz  
+
+
+# DELETE ONE QUIZ 
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_one_quiz(request,id):
@@ -150,9 +287,11 @@ def delete_one_quiz(request,id):
             'status' : "False",
             'message' : 'Something went wrong'
         })
-# delete_all_quiz
 
 
+
+
+# DELETE ALL QUIZS
 @api_view(['DELETE'])
 @permission_classes([IsAuthenticated])
 def delete_all_quiz(request):
@@ -161,240 +300,7 @@ def delete_all_quiz(request):
     return Response({
             'all quizs have alreadly been deleted'
         })
-        
-# # QUESTION ***********************************************************************************************************************************************************
-# # CREATE QUESTION
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def create_question(request):
-#     try: 
-#             data =request.data
-#             serializer = QuestionSerializer(data = data)
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response({
-#                     'status' : "True",
-#                     'message' : 'Success to create a question',
-#                     'data': serializer.data 
-#                 })
-#             return Response({
-#                     'status' : "False",
-#                     'message' : 'Fail to create a question',
-#                     'data': serializer.errors
-#                 })
-#     except Exception as e:
-#             print(e)
-#             return Response({
-#                 'status' : "False",
-#                 'message' : 'Something went wrong'
-#             })
-
-
-# # GET ALL QUESTION
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def get_all_question(request):
-#     question_objs = Question.objects.all()
-#     serializer = QuestionSerializer(question_objs,many=True)
-#     return Response({
-#                 'status' : "True",
-#                 'message' : 'Access to get all question',
-#                 'data': serializer.data
-#             })
     
-
-# # GET ONE QUESTION 
-
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def get_one_question(request,id):
-#     try:
-#         if not id:
-#             return Response({
-#                 'status' : "False",
-#                 'message' : 'The question is required',
-#                 'data': {}
-#             })
-#         question_objs = Question.objects.get( id = id)
-#         serializer = QuizSerializer(question_objs,many=False)
-#         return Response({
-#         'status' : "True",
-#         'message' : "Access to get your question",
-#         'data': serializer.data
-#         })
-#     except Exception as e:
-#         print(e)
-#         return Response({
-#             'status' : "False",
-#             'message' : 'Something went wrong'
-#         })  
-
-
-
-# # UPDATE QUESTION
-# @api_view(['PATCH'])
-# @permission_classes([IsAuthenticated])
-# def update_question(request,id):
-#     try:
-#         data = request.data
-#         obj = Question.objects.get(id=id)
-#         serializer = QuestionSerializer(obj, data = data, partial = True)
-#         if serializer.is_valid():
-#             return Response({
-#                 'status' : "True",
-#                 'message' : 'Success to update the quiz',
-#                 'data': serializer.data
-#             })
-#         return Response({
-#                 'status' : "False",
-#                 'message' : 'Fail to update the quiz',
-#                 'data': serializer.errors
-#             })
-#     except Exception as e:
-#         print(e)
-#         return Response({
-#             'status' : "False",
-#             'message' : 'Something went wrong'
-#         })  
-
-
-# #DELETE ONE QUESTION
-# @api_view(['DELETE'])
-# @permission_classes([IsAuthenticated])
-# def delete_one_question(request,id):
-#     try:
-#         data = request.data
-#         if not id:
-#             return Response({
-#                 "can not find the id"
-#             })
-#         obj = Question.objects.get(id=id)
-#         obj.delete()
-#         return Response({
-#             'the question has alreadly been deleted'
-#         })
-#     except Exception as e:
-#         print(e)
-#     return Response({
-#             'status' : "False",
-#             'message' : 'Something went wrong'
-#         })
-
-
-# #DELETE ALL QUESTION
-# @api_view(['DELETE'])
-# @permission_classes([IsAuthenticated])
-# def delete_all_question(request):
-#     question_objs = Question.objects.all()
-#     question_objs.delete()
-#     return Response({
-#             'all questions have alreadly been deleted'
-#         })
-
-
-# # OPTION***********************************************************************************************************************************************
-# #CREATE OPTION
-# @api_view(['POST'])
-# @permission_classes([IsAuthenticated])
-# def create_option(request):
-#     try: 
-#             data =request.data
-#             serializer = OptionSerializer(data = data)
-#             if serializer.is_valid():
-#                 serializer.save()
-#                 return Response({
-#                     'status' : "True",
-#                     'message' : 'Success to create a option',
-#                     'data': serializer.data 
-#                 })
-#             return Response({
-#                     'status' : "False",
-#                     'message' : 'Fail to create a option',
-#                     'data': serializer.errors
-#                 })
-#     except Exception as e:
-#             print(e)
-#             return Response({
-#                 'status' : "False",
-#                 'message' : 'Something went wrong'
-#             })
-
-# #UPDATE OPTION
-# @api_view(['PATCH'])
-# @permission_classes([IsAuthenticated])
-# def update_question(request,id):
-#     try:
-#         data = request.data
-#         obj = Question.objects.get(id=id)
-#         serializer = QuestionSerializer(obj, data = data, partial = True)
-#         if serializer.is_valid():
-#             return Response({
-#                 'status' : "True",
-#                 'message' : 'Success to update the quiz',
-#                 'data': serializer.data
-#             })
-#         return Response({
-#                 'status' : "False",
-#                 'message' : 'Fail to update the quiz',
-#                 'data': serializer.errors
-#             })
-#     except Exception as e:
-#         print(e)
-#         return Response({
-#             'status' : "False",
-#             'message' : 'Something went wrong'
-#         })  
-
-# #GET ONE OPTION
-# @api_view(['GET'])
-# @permission_classes([IsAuthenticated])
-# def get_one_option(request,id):
-#     try:
-#         if not id:
-#             return Response({
-#                 'status' : "False",
-#                 'message' : 'The option is required',
-#                 'data': {}
-#             })
-#         option_objs = Option.objects.get( id = id)
-#         serializer = OptionSerializer(option_objs,many=False)
-#         return Response({
-#         'status' : "True",
-#         'message' : "Access to get your question",
-#         'data': serializer.data
-#         })
-#     except Exception as e:
-#         print(e)
-#         return Response({
-#             'status' : "False",
-#             'message' : 'Something went wrong'
-#         })  
-
-# #DELETE ONe OPTION
-# @api_view(['DELETE'])
-# @permission_classes([IsAuthenticated])
-# def delete_one_question(request,id):
-#     try:
-#         data = request.data
-#         if not id:
-#             return Response({
-#                 "can not find the id"
-#             })
-#         obj = Question.objects.get(id=id)
-#         obj.delete()
-#         return Response({
-#             'the question has alreadly been deleted'
-#         })
-#     except Exception as e:
-#         print(e)
-#     return Response({
-#             'status' : "False",
-#             'message' : 'Something went wrong'
-#         })
-# # Create your views here
-
-
-
 
 
 @api_view(["GET"])
@@ -405,3 +311,11 @@ def hello(request):
     })
 
 
+
+    
+
+
+
+
+
+   

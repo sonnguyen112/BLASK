@@ -5,13 +5,13 @@ import uuid
 class Quiz(models.Model):
     createAt = models.DateTimeField(auto_now_add = True)
     updateAt = models.DateTimeField(auto_now = True)
-    title = models.CharField(max_length=100)
+    title = models.CharField(max_length=100, default = "defautTitle")
     description = models.TextField(null = True, blank = True)
     userOf = models.ForeignKey(User, on_delete=models.CASCADE)
 
 class Question(models.Model):
     description = models.TextField(null = True, blank = True)
-    time = models.TimeField()
+    numOfSecond = models.IntegerField(default=10)
     image = models.ImageField(upload_to= "QuestionImage", blank = True, null = True)
     score = models.IntegerField()
     quizOf = models.ForeignKey(Quiz, on_delete=models.CASCADE)
