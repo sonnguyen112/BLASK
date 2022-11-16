@@ -1,6 +1,10 @@
 from django.db import models
 from django.contrib.auth.models import User
 import uuid
+
+#lets us explicitly set upload path and filename 
+def upload_to(instance, filename): 
+    return '/'.join(['images', str(instance.name), filename])
 # Create your models here.
 class Quiz(models.Model):
     createAt = models.DateTimeField(auto_now_add = True)
@@ -12,14 +16,14 @@ class Quiz(models.Model):
 class Question(models.Model):
     description = models.TextField(null = True, blank = True)
     numOfSecond = models.IntegerField(default=10)
-    image = models.ImageField(upload_to= "QuestionImage", blank = True, null = True)
+    image = models.ImageField(upload_to= upload_to, blank = True, null = True)
     score = models.IntegerField()
     quizOf = models.ForeignKey(Quiz, on_delete=models.CASCADE)
     numberOfAnswer= models.IntegerField(default = 1)
 
 class Option(models.Model):
     content =  models.TextField(null = True, blank = True)
-    image = models.FileField(upload_to= "OptionImage", blank = True, null = True)
+    image = models.FileField(upload_to= upload_to, blank = True, null = True)
     questionOf = models.ForeignKey(Question, on_delete=models.CASCADE)
     isTrue = models.BooleanField(default=False)
 
