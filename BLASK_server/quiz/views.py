@@ -4,7 +4,11 @@ from .models import *
 from rest_framework.decorators import api_view, permission_classes
 from rest_framework.permissions import IsAuthenticated
 from rest_framework import status
-
+import logging
+import base64
+from PIL import Image
+from io import BytesIO
+import uuid
 
 # QUIZ############################################################################################################################################################################################################################################
 
@@ -14,59 +18,94 @@ from rest_framework import status
 def create_quiz(request):
     try:
         data = request.data
+
+        if "imageQuizUrl" in data:
+            base64_img = data["imageQuizUrl"]
+            logging.warning(base64_img)
+            im = Image.open(BytesIO(base64.b64decode(base64_img)))
+            file_name = f"quiz_{uuid.uuid4()}.jpg"
+            im.save(f"mediafiles/quiz_img/{file_name}")
+            quiz_img_url = f"http://localhost:8000/media/quiz_img/{file_name}"
+        else:
+            quiz_img_url = f"http://localhost:8000/media/default.jpg"
+
         dataQuiz = {
-            'title': data['title'], 'description': data['description'], 'userOf': request.user.id}
+            'title': data['title'], 
+            'description': data['description'], 
+            'userOf': request.user.id,
+            'imageQuizUrl' : quiz_img_url
+        }
+           
         serializerQuiz = QuizSerializer(data=dataQuiz)
         if serializerQuiz.is_valid():
             serializerQuiz.save()
         else:
             return Response({
-                'status': "False",
-                'message': 'Fail to create quiz at Quiz',
-            })
-        if 'questions' in data:
-            dataQuestionArray = data['questions']
-            for i in range(len(dataQuestionArray)):
-                dataSubQuestion = {
-                    'numberOfAnswer': dataQuestionArray[i]['num_of_answer'],
-                    'quizOf': serializerQuiz.data['id'],
-                    'score': dataQuestionArray[i]['point'],
-                    'numOfSecond': dataQuestionArray[i]['time']
+                'message': 'Fail to create quiz because requese invalid',
+            }, status=status.HTTP_400_BAD_REQUEST)
+
+        dataQuestionArray = data['questions']
+        for i in range(len(dataQuestionArray)):
+
+            if "imageQuestionUrl" in dataQuestionArray:
+                base64_img = dataQuestionArray["imageQuestionUrl"]
+                logging.warning(base64_img)
+                im = Image.open(BytesIO(base64.b64decode(base64_img)))
+                file_name = f"question_{uuid.uuid4()}.jpg"
+                im.save(f"mediafiles/question_img/{file_name}")
+                question_img_url = f"http://localhost:8000/media/question_img/{file_name}"
+            else:
+                question_img_url = f"http://localhost:8000/media/default.jpg"
+
+            dataSubQuestion = {
+                'numberOfAnswer': dataQuestionArray[i]['num_of_answer'],
+                'quizOf': serializerQuiz.data['id'],
+                'score': dataQuestionArray[i]['point'],
+                'numOfSecond': dataQuestionArray[i]['time'],
+                'imageQuestionUrl' : question_img_url
+            }
+            serializerQuestion = QuestionSerializer(data=dataSubQuestion)
+            if serializerQuestion.is_valid():
+                serializerQuestion.save()
+            else:
+                return Response({
+                    'message': 'Fail to create quiz because requese invalid',
+                }, status=status.HTTP_400_BAD_REQUEST)
+
+            dataOptionArray = dataQuestionArray[i]['options']
+            for j in range(len(dataOptionArray)):
+
+                if "imageOptionUrl" in dataOptionArray:
+                    base64_img = dataOptionArray["imageQuestionUrl"]
+                    logging.warning(base64_img)
+                    im = Image.open(BytesIO(base64.b64decode(base64_img)))
+                    file_name = f"option_{uuid.uuid4()}.jpg"
+                    im.save(f"mediafiles/option_img/{file_name}")
+                    option_img_url = f"http://localhost:8000/media/question_img/{file_name}"
+                else:
+                    option_img_url = f"http://localhost:8000/media/default.jpg"
+
+                dataSubOption = {
+                    'content': dataOptionArray[j]['content'],
+                    'isTrue': dataOptionArray[j]['is_true'],
+                    'questionOf': serializerQuestion.data['id'],
+                    'imageOptionUrl' : option_img_url
                 }
-                serializerQuestion = QuestionSerializer(data=dataSubQuestion)
-                if serializerQuestion.is_valid():
-                    serializerQuestion.save()
+
+                serializerOption = OptionSerializer(data=dataSubOption)
+                if serializerOption.is_valid():
+                    serializerOption.save()
                 else:
                     return Response({
-                        'status': "False",
-                        'message': 'Fail to create quiz at Question',
-                    })
-                if 'options' in dataQuestionArray[i]:
-                    dataOptionArray = dataQuestionArray[i]['options']
-                    for j in range(len(dataOptionArray)):
-                        dataSubOption = {
-                            'content': dataOptionArray[j]['content'],
-                            'isTrue': dataOptionArray[j]['is_true'],
-                            'questionOf': serializerQuestion.data['id']
-                        }
-                        serializerOption = OptionSerializer(data=dataSubOption)
-                        if serializerOption.is_valid():
-                            serializerOption.save()
-                        else:
-                            return Response({
-                                'status': "False",
-                                'message': 'Fail to create quiz at Option',
-                            })
+                        'message': 'Fail to create quiz because requese invalid',
+                    }, status=status.HTTP_400_BAD_REQUEST)
         return Response({
-                        'status': "True",
-                        'message': 'Success to create quiz',
-                        })
+            "message" : "Created Quiz Successfully"
+        }, status=status.HTTP_201_CREATED)
     except Exception as e:
-        print(e)
         return Response({
-            'status': "False",
             'message': str(e)
-        })
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 # GET ALL QUIZ
 
@@ -107,6 +146,7 @@ def get_one_quiz(request, id):
                 listOption.append({
                     'id': j.id,
                     'content': j.content,
+                    'image': j.image,
                     'isTrue': j.isTrue
                 })
             listQuestion.append({
@@ -115,7 +155,9 @@ def get_one_quiz(request, id):
                 'score': i.score,
                 'numOfSecond': i.numOfSecond,
                 'numberOfAnswer': i.numberOfAnswer,
+                'image': i.image,
                 'options': listOption
+                
             })
         return Response({
             "id": quizObj.id,
@@ -249,3 +291,4 @@ def delete_all_quiz(request):
         },
         status=status.HTTP_200_OK
     )
+
