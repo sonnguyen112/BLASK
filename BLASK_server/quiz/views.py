@@ -23,7 +23,7 @@ def create_quiz(request):
             base64_img = data["imageQuizUrl"]
             logging.warning(base64_img)
             im = Image.open(BytesIO(base64.b64decode(base64_img)))
-            file_name = f"quiz_{uuid.uuid4()}.jpg"
+            file_name = f"quiz_{uuid.uuid4()}.png"
             im.save(f"mediafiles/quiz_img/{file_name}")
             quiz_img_url = f"http://localhost:8000/media/quiz_img/{file_name}"
         else:
@@ -47,11 +47,11 @@ def create_quiz(request):
         dataQuestionArray = data['questions']
         for i in range(len(dataQuestionArray)):
 
-            if "imageQuestionUrl" in dataQuestionArray:
-                base64_img = dataQuestionArray["imageQuestionUrl"]
+            if "imageQuestionUrl" in dataQuestionArray[i]:
+                base64_img = dataQuestionArray[i]["imageQuestionUrl"]
                 logging.warning(base64_img)
                 im = Image.open(BytesIO(base64.b64decode(base64_img)))
-                file_name = f"question_{uuid.uuid4()}.jpg"
+                file_name = f"question_{uuid.uuid4()}.png"
                 im.save(f"mediafiles/question_img/{file_name}")
                 question_img_url = f"http://localhost:8000/media/question_img/{file_name}"
             else:
@@ -75,11 +75,11 @@ def create_quiz(request):
             dataOptionArray = dataQuestionArray[i]['options']
             for j in range(len(dataOptionArray)):
 
-                if "imageOptionUrl" in dataOptionArray:
-                    base64_img = dataOptionArray["imageQuestionUrl"]
+                if "imageOptionUrl" in dataOptionArray[j]:
+                    base64_img = dataOptionArray[j]["imageQuestionUrl"]
                     logging.warning(base64_img)
                     im = Image.open(BytesIO(base64.b64decode(base64_img)))
-                    file_name = f"option_{uuid.uuid4()}.jpg"
+                    file_name = f"option_{uuid.uuid4()}.png"
                     im.save(f"mediafiles/option_img/{file_name}")
                     option_img_url = f"http://localhost:8000/media/question_img/{file_name}"
                 else:
@@ -100,7 +100,8 @@ def create_quiz(request):
                         'message': 'Fail to create quiz because requese invalid',
                     }, status=status.HTTP_400_BAD_REQUEST)
         return Response({
-            "message" : "Created Quiz Successfully"
+            "message" : "Created Quiz Successfully",
+            "id" : serializerQuiz.data["id"]
         }, status=status.HTTP_201_CREATED)
     except Exception as e:
         return Response({
@@ -146,7 +147,7 @@ def get_one_quiz(request, id):
                 listOption.append({
                     'id': j.id,
                     'content': j.content,
-                    'image': j.image,
+                    'image': j.imageOptionUrl,
                     'isTrue': j.isTrue
                 })
             listQuestion.append({
@@ -155,7 +156,7 @@ def get_one_quiz(request, id):
                 'score': i.score,
                 'numOfSecond': i.numOfSecond,
                 'numberOfAnswer': i.numberOfAnswer,
-                'image': i.image,
+                'image': i.imageQuestionUrl,
                 'options': listOption
                 
             })
@@ -164,11 +165,11 @@ def get_one_quiz(request, id):
             "title": quizObj.title,
             "description": quizObj.description,
             "username": userObj.username,
+            "image" : quizObj.imageQuizUrl,
             "questions": listQuestion
         })
 
     except Exception as e:
-        print(e)
         return Response({
             "data": "something wrong",
             "erros": str(e)
@@ -183,62 +184,92 @@ def update_quiz(request, id):
         if not id:
             return Response({
                 "message": "can not find the id"
-            },
-                status=status.HTTP_404_NOT_FOUND
-            )
+            },status=status.HTTP_404_NOT_FOUND)
         data = request.data
-        if 'title' in data:
-            dataQuiz = {
-                'title': data['title'], 'description': data['description'], 'userOf': request.user.id}
+
+        if "imageQuizUrl" in data:
+            base64_img = data["imageQuizUrl"]
+            logging.warning(base64_img)
+            im = Image.open(BytesIO(base64.b64decode(base64_img)))
+            file_name = f"quiz_{uuid.uuid4()}.png"
+            im.save(f"mediafiles/quiz_img/{file_name}")
+            quiz_img_url = f"http://localhost:8000/media/quiz_img/{file_name}"
         else:
-            dataQuiz = {
-                'description': data['description'], 'userOf': request.user.id}
+            quiz_img_url = f"http://localhost:8000/media/default.jpg"
+
+        dataQuiz = {
+            'title': data['title'], 
+            'description': data['description'], 
+            'userOf': request.user.id,
+            'imageQuizUrl' : quiz_img_url
+        }
         objQuiz = Quiz.objects.get(id=id)
         serializerQuiz = QuizSerializer(objQuiz, data=dataQuiz, partial=True)
         if serializerQuiz.is_valid():
             serializerQuiz.save()
         else:
             return Response({
-                'status': "False",
-                'message': 'Fail to create quiz',
-            })
-        if 'questions' in data:
-            dataQuestionArray = data['questions']
-            for i in range(len(dataQuestionArray)):
-                dataSubQuestion = {
-                    'numberOfAnswer': dataQuestionArray[i]['num_of_answer'],
-                    'quizOf': serializerQuiz.data['id'],
-                    'score': dataQuestionArray[i]['point'],
-                    'numOfSecond': dataQuestionArray[i]['time']
-                }
-            objQuestion = Question.objects.get(id=serializerQuiz.data['id'])
+                'message': 'Fail to update quiz',
+            }, status=status.HTTP_400_BAD_REQUEST)
+        dataQuestionArray = data['questions']
+            
+        question_objs = Question.objects.filter(quizOf=serializerQuiz.data['id'])
+        i = 0
+        for question_obj in question_objs:
+            if "imageQuestionUrl" in dataQuestionArray[i]:
+                base64_img = dataQuestionArray[i]["imageQuestionUrl"]
+                logging.warning(base64_img)
+                im = Image.open(BytesIO(base64.b64decode(base64_img)))
+                file_name = f"question_{uuid.uuid4()}.png"
+                im.save(f"mediafiles/question_img/{file_name}")
+                question_img_url = f"http://localhost:8000/media/question_img/{file_name}"
+            else:
+                question_img_url = f"http://localhost:8000/media/default.jpg"
+
+            dataSubQuestion = {
+                'numberOfAnswer': dataQuestionArray[i]['num_of_answer'],
+                'quizOf': serializerQuiz.data['id'],
+                'score': dataQuestionArray[i]['point'],
+                'numOfSecond': dataQuestionArray[i]['time'],
+                "imgQuestionUrl" : question_img_url
+            }
             serializerQuestion = QuestionSerializer(
-                objQuestion, data=dataSubQuestion, partial=True)
+                question_obj, data=dataSubQuestion, partial=True)
             if serializerQuestion.is_valid():
                 serializerQuestion.save()
             else:
                 return Response({
-                    'status': "False",
-                    'message': 'Fail to update quiz',
-                })
-            if 'options' in dataQuestionArray[i]:
-                dataOptionArray = dataQuestionArray[i]['options']
-                for j in range(len(dataOptionArray)):
-                    dataSubOption = {
-                        'content': dataOptionArray[j]['content'],
-                        'isTrue': dataOptionArray[j]['is_true'],
-                        'questionOf': serializerQuestion.data['id']
-                    }
-                    objOption = Option.objects.get(
-                        id=serializerQuestion.data['id'])
-                    serializerOption = OptionSerializer(data=dataSubOption)
-                    if serializerOption.is_valid():
-                        serializerOption.save()
-                    else:
-                        return Response({
-                            'status': "False",
-                            'message': 'Fail to update quiz',
-                        })
+                    'message': 'Fail to update question in Quiz',
+                }, status=status.HTTP_400_BAD_REQUEST)
+        
+            dataOptionArray = dataQuestionArray[i]['options']
+            option_objs = Option.objects.filter(questionOf =serializerQuestion.data["id"])
+            j = 0
+            for option_obj in option_objs:
+                if "imageOptionUrl" in dataOptionArray[j]:
+                    base64_img = dataOptionArray[j]["imageQuestionUrl"]
+                    logging.warning(base64_img)
+                    im = Image.open(BytesIO(base64.b64decode(base64_img)))
+                    file_name = f"option_{uuid.uuid4()}.png"
+                    im.save(f"mediafiles/option_img/{file_name}")
+                    option_img_url = f"http://localhost:8000/media/question_img/{file_name}"
+                else:
+                    option_img_url = f"http://localhost:8000/media/default.jpg"
+                dataSubOption = {
+                    'content': dataOptionArray[j]['content'],
+                    'isTrue': dataOptionArray[j]['is_true'],
+                    'questionOf': serializerQuestion.data['id'],
+                    "imageOptionUrl" : option_img_url
+                }
+                serializerOption = OptionSerializer(option_obj,data=dataSubOption, partial=True)
+                if serializerOption.is_valid():
+                    serializerOption.save()
+                else:
+                    return Response({
+                        'message': 'Fail to update option in Quiz',
+                    }, status=status.HTTP_400_BAD_REQUEST)
+                j += 1
+            i += 1
         return Response({
                         'status': "True",
                         'message': 'Success to update quiz',
