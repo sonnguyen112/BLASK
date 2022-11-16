@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
-import uuid
+from drf_extra_fields.fields import Base64ImageField
+
 # Create your models here.
 class Quiz(models.Model):
     createAt = models.DateTimeField(auto_now_add = True)
@@ -8,7 +9,7 @@ class Quiz(models.Model):
     title = models.CharField(max_length=100, default = "defautTitle")
     description = models.TextField(null = True, blank = True)
     userOf = models.ForeignKey(User, on_delete=models.CASCADE)
-
+    
 class Question(models.Model):
     description = models.TextField(null = True, blank = True)
     numOfSecond = models.IntegerField(default=10)
@@ -23,3 +24,5 @@ class Option(models.Model):
     questionOf = models.ForeignKey(Question, on_delete=models.CASCADE)
     isTrue = models.BooleanField(default=False)
 
+class TestImage(models.Model):
+    img = Base64ImageField()
