@@ -38,7 +38,7 @@ function Instruction()
                   >
                       How does BLASK! work?
             </Typography>
-          <Grid container spacing={{xs:1, md:3, xl: 5}} sx={{ flexGrow: 1, mt:5}}  alignItems="center" direction='row' justifyContent="space-evenly">
+          <Grid container spacing={{xs:1, md:3, xl: 5}} maxHeight="false" sx={{ flexGrow: 1, mt:5}}  alignItems="center" direction='row' justifyContent="space-evenly">
             {cardElement}
           </Grid>
         </Container>
