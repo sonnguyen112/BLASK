@@ -116,6 +116,7 @@ export default function SignUp() {
       <Container maxWidth="sm" >
         <CssBaseline />
         <Box
+
           sx={{
             paddingTop: 3,
             padding: 5,
@@ -189,7 +190,7 @@ export default function SignUp() {
               <Grid item xs={12}>
                 <FormControlLabel
                   control={<Checkbox value="allowExtraEmails" color="primary" />}
-                  label="I want to receive inspiration, marketing promotions and updates via email."
+                  label="I want to receive updates via email."
                 />
               </Grid>
             </Grid>

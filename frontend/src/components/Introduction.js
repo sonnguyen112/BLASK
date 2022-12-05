@@ -61,7 +61,7 @@ function Introduction()
                     
                 </Container>
 
-                <Box component='img' src={homeImage} sx={{height: 350, mt:10, mx:2, '&:hover':{opacity: [1, 0.95, 0.9]}}} />
+                <Box component='img' src={homeImage} sx={{height: {xs: 250, md:350}, mt:10, mx:2, '&:hover':{opacity: [1, 0.95, 0.9]}}} />
             </Stack>
         </Box>
         </>

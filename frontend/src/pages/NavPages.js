@@ -26,8 +26,8 @@ const NavPages = () => {
         <NavBav token={token} setToken={setToken}/>
         <ScrollTop showBelow={150}/>
         <Routes>
-            <Route index element={<Home />} /> 
-            <Route path="home" element={<Home />}/>
+            <Route index element={<Home token={token}/>} /> 
+            <Route path="home" element={<Home token={token}/>}/>
             <Route path="library" element={<Library />} />
             <Route path="reports" element={<Reports />} />
             <Route path="signup" element={<Signup />} />
