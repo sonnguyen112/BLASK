@@ -1,12 +1,10 @@
 from rest_framework import serializers
 from .models import *
-
-class QuizSerializer(serializers.ModelSerializer):
     
+class QuizSerializer(serializers.ModelSerializer):
     class Meta:
         model = Quiz
         fields = '__all__'
-        # exclude = ['createAt']
     
 
 class QuestionSerializer(serializers.ModelSerializer):
@@ -18,4 +16,3 @@ class OptionSerializer(serializers.ModelSerializer):
     class Meta:
         model = Option
         fields = '__all__'
-      

@@ -3,10 +3,13 @@ from rest_framework.permissions import IsAuthenticated
 from rest_framework.response import Response
 from django.contrib.auth.models import User
 from rest_framework import status
+from .models import UserProfile
 
 # Create your views here.
 @api_view(["POST"])
 def sign_up(request):
+    first_name = request.data.get('firstname')
+    last_name = request.data.get('lastname')
     username = request.data.get('username')
     password = request.data.get('password')
     confirm_password = request.data.get('password_confirm')
@@ -23,6 +26,8 @@ def sign_up(request):
         else:
             user = User.objects.create_user(username=username, password=password, email=email)
             user.save()
+            user_profile = UserProfile.objects.create(first_name=first_name, last_name=last_name, user=user, profile_pic="default.jpg")
+            user_profile.save()
             return Response({
                 "message" : "User created successfully",
             }, status=status.HTTP_201_CREATED)
