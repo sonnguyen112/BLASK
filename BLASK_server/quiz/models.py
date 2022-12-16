@@ -9,6 +9,7 @@ class Quiz(models.Model):
     description = models.TextField(null = True, blank = True)
     userOf = models.ForeignKey(User, on_delete=models.CASCADE)
     imageQuizUrl = models.CharField(max_length=100, null=True) 
+    slug = models.SlugField(max_length=200, unique=True)
     
 class Question(models.Model):
     description = models.TextField(null = True, blank = True)
@@ -16,7 +17,6 @@ class Question(models.Model):
     imageQuestionUrl = models.CharField(max_length=100, null=True) 
     score = models.IntegerField()
     quizOf = models.ForeignKey(Quiz, on_delete=models.CASCADE)
-    numberOfAnswer= models.IntegerField(default = 1)
 
 class Option(models.Model):
     content =  models.TextField(null = True, blank = True)

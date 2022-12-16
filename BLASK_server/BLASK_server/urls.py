@@ -19,6 +19,7 @@ from django.conf import settings
 from django.conf.urls.static import static
 
 urlpatterns = [
+    path("room/", include("room.urls")),
     path("quiz/", include("quiz.urls")),
     path("auth/", include("BLASK_auth.urls")),
     path("admin/", admin.site.urls),
