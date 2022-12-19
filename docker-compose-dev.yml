@@ -34,10 +34,10 @@ services:
     environment:
       - POSTGRES_PASSWORD=Son[1122002]
       - POSTGRES_DB=BLASK_DB
-    volumes:
-      - postgres-db:/var/lib/postgresql/data
+    # volumes:
+    #   - postgres-db:/var/lib/postgresql/data
   redis:
     image: redis:5
 
-volumes:
-  postgres-db:
+# volumes:
+#   postgres-db:
