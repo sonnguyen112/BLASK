@@ -114,7 +114,9 @@ export default function SignUp() {
         })
             .then((response) =>
             { 
+              console.log(`%response%`)
               response.json()
+              
             })
             .then((data) => 
             {
