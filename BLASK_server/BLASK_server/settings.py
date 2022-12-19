@@ -31,10 +31,16 @@ DEBUG = True
 
 ALLOWED_HOSTS = []
 
+# Actual directory user file go to 
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'mediafiles')
+
+# URL used to access the media
+MEDIA_URL = '/media/'
 
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -76,7 +82,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "BLASK_server.wsgi.application"
-
+ASGI_APPLICATION = "BLASK_server.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -138,3 +152,9 @@ REST_FRAMEWORK = {
         'rest_framework.authentication.TokenAuthentication'
     ]
 }
+
+# Actual directory user files go to
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'BLASK/mediafiles')
+
+# URL used to access the media
+MEDIA_URL = '/media/'
