@@ -1,4 +1,4 @@
-import * as React from 'react';
+import React, {  useEffect, useRef } from 'react'
 import AppBar from '@mui/material/AppBar';
 import Box from '@mui/material/Box';
 import Toolbar from '@mui/material/Toolbar';
@@ -15,8 +15,10 @@ import Divider from '@mui/material/Divider';
 import AdbIcon from '@mui/icons-material/Adb';
 import LogoutIcon from '@mui/icons-material/Logout';
 import AccountCircleIcon from '@mui/icons-material/AccountCircle';
+import AddIcon from '@mui/icons-material/Add';
 import HomeIcon from '@mui/icons-material/Home';
 import LibraryBooksIcon from '@mui/icons-material/LibraryBooks';
+import PlayArrowIcon from '@mui/icons-material/PlayArrow';
 import AnalyticsIcon from '@mui/icons-material/Analytics';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { red } from '@mui/material/colors';
@@ -42,6 +44,12 @@ function ResponsiveAppBar(props) {
     const [anchorElNav, setAnchorElNav] = React.useState(null);
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
+    const ref = useRef(null)
+
+    useEffect(() => {
+        props.setHeight(ref.current.clientHeight)
+      },[props])
+
     const handleLogin = () => {
         
     }
@@ -60,7 +68,17 @@ function ResponsiveAppBar(props) {
             case 0:
                 break;
             case 1:
+                console.log("logout")
+                window.localStorage.removeItem("token")
+                window.localStorage.removeItem("profile")
                 props.setToken("");
+                props.setProfile({
+                    "username": "",
+                    "firstname": "",
+                    "lastname": "",
+                    "email": "",
+                    "avatar": ""
+                    })
                 navigate('/')
                 break;
             default:
@@ -81,7 +99,7 @@ function ResponsiveAppBar(props) {
 
     return (
         <ThemeProvider theme={theme}>
-        <AppBar position="static">
+        <AppBar position="static" ref={ref}>
         <Container maxWidth="xl" color="primary light" >
             <Toolbar id="back-to-top-anchor" disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
@@ -213,19 +231,27 @@ function ResponsiveAppBar(props) {
 
 
             {props.token.trim() !== "" ? (<>
-            <Button 
+            <Tooltip title="Create">
+            <IconButton 
             component={Link}
             to = '/create-quiz'
-            color='secondary' 
             variant='contained'
-            sx={{ my: 2, display: 'flex'}}>Create</Button>
-            <Button component={Link} to='*' variant="contained" sx={{m: 1, backgroundColor:"#e3f2fd", color:"#000"}}>Play</Button>
+            sx={{ backgroundColor:"#fff",color:"#1976d2", "&:hover":{color:"#fff"}}}>
+                <AddIcon sx={{fontSize:"25px"}}/>
+            </IconButton>
+            </Tooltip>
+            <Tooltip title="Play">
+
+            <IconButton component={Link} to='*' variant="contained" 
+            sx={{m: 1, backgroundColor:"#fff",color:"#1976d2", "&:hover":{color:"#fff"}}}>
+            <PlayArrowIcon sx={{fontSize:"25px"}}/></IconButton>
+            </Tooltip>
 
             <Box sx={{ flexGrow: 0 }}>
                 
-                <Tooltip title="Open settings">
+                <Tooltip title="Settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/images/image_home.png" />
+                    <Avatar alt={props.profile.firstname} src={props.profile.avatar} />
                 </IconButton>
                 </Tooltip>
                 <Menu

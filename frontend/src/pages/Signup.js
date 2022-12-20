@@ -15,6 +15,8 @@ import Container from '@mui/material/Container';
 import Alert from '@mui/material/Alert'
 import AlertTitle  from '@mui/material/AlertTitle';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
+import { useNavigate } from "react-router-dom";
+
 
 import '../style/signup.css'
 
@@ -34,7 +36,9 @@ function Copyright(props) {
 
 const theme = createTheme();
 
-export default function SignUp() {
+export default function SignUp(props) {
+
+    let navigate = useNavigate(); 
     const [isLoading, setLoading] = React.useState(false)
     const pattern_email = /(\S+@\w+\.\w+)/;
     const pattern_special_character = /(\d)/;
@@ -54,8 +58,9 @@ export default function SignUp() {
     let message = {
       name: '',
       password: '',
-        email: '',
-        check: false
+      username: '',
+      email: '',
+      check: false
     }
     if (firstname.length === 0 || lastname.length === 0)
     {
@@ -67,11 +72,15 @@ export default function SignUp() {
       message.check = true
       message.name = 'Name cannot contain any special characters.'
     }
-
+    if(username.lenght < 6)
+    {
+      message.check = true
+      message.username = "Name should be larger than 6 character."
+    }
     if (password_1.length < 6)
     {
       message.check = true
-      message.password = 'Password should be large than 6 character.\n'
+      message.password = 'Password should be larger than 6 character.\n'
     }
     else if (password_1.localeCompare(password_2) !== 0)
     {
@@ -106,23 +115,22 @@ export default function SignUp() {
         "lastname": lastname
       }
       setLoading(true)
-      fetch("http://localhost:8000/auth/api/sign_up",  {
-            mode: 'cors',
-            method: "POST",
-            headers: [['Content-Type', 'application/json']],  
-            body: JSON.stringify(signUpData),
-        })
-            .then((response) =>
-            { 
-              console.log(`%response%`)
-              response.json()
-              
-            })
-            .then((data) => 
-            {
-              setLoading(false)
-              console.log(data)
-            });
+
+      async function fetchSignUp(){
+        const response = await fetch("http://localhost:8000/auth/api/sign_up",  {
+        mode: 'cors',
+        method: "POST",
+        headers: [['Content-Type', 'application/json']],  
+        body: JSON.stringify(signUpData),
+      })
+          const json = await response.json()
+
+          console.log(`signup2 ${json}`)
+          console.log(`signup1${JSON.stringify(json)}`)
+          setLoading(false)
+          navigate("/login")
+      }
+      fetchSignUp()
     }
   };
   
@@ -145,7 +153,7 @@ export default function SignUp() {
         <div className="div"><span className="dot"></span></div>
         <div className="div"><span className="dot"></span></div>
         <div className="div"><span className="dot"></span></div>
-      <Container maxWidth="sm" >
+      <Container maxWidth="sm" sx={{minHeight:`calc(100vh - ${props.height}px)`}}>
         <CssBaseline />
         <Box
 
@@ -250,6 +258,9 @@ export default function SignUp() {
             
             {errorMessage.check && <Alert severity="error" sx={{m:2, width: {md: '400px', xl: '600px'}}}>
                 <AlertTitle>Error</AlertTitle>
+                <Typography  variant='body2'>
+                {errorMessage.username}
+                </Typography>
                 <Typography  variant='body2'>
                 {errorMessage.name}
                 </Typography>

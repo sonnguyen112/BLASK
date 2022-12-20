@@ -162,5 +162,6 @@ MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'BLASK/mediafiles')
 MEDIA_URL = '/media/'
 
 CORS_ALLOWED_ORIGINS = [
-    "http://localhost:3000",
+    "http://localhost:3001",
+    "http://localhost:3000"
 ]

@@ -9,6 +9,7 @@ import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
+import LinearProgress from '@mui/material/LinearProgress';
 import LoginIcon from '@mui/icons-material/Login';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
@@ -31,17 +32,60 @@ const theme = createTheme();
 
 export default function Login(props) {
   let navigate = useNavigate(); 
+  const [remember, setRemember] = React.useState(false);
+  const [isLoading, setLoading] = React.useState(false)
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
 
-    props.setToken("1312002")
-    navigate('/');
+    const username = data.get('username')
+    const password = data.get('password')
+
+    sendDataSignup()
+
+    function sendDataSignup()
+    {
+      const signInData = {
+        "username" : username,
+        "password" : password
+      }
+      setLoading(true)
+
+      async function fetchLogin(){
+        const response = await fetch("http://localhost:8000/auth/api/sign_in",  {
+        mode: 'cors',
+        method: "POST",
+        headers: [['Content-Type', 'application/json']],  
+        body: JSON.stringify(signInData),
+      })
+          const json = await response.json()
+          const profile = {"username": json.username,
+                          "firstname": json.firstname,
+                          "lastname": json.lastname,
+                          "email": json.email,
+                          "avatar": json.avatar}
+          setLoading(false)
+          props.setToken(json.token)
+          props.setProfile(profile)
+          if (remember)
+          {
+            window.localStorage.setItem("token", json.token)
+            window.localStorage.setItem("profile", profile)
+          }
+          console.log(json.avatar)
+          navigate('/');
+      }
+      fetchLogin()
+    }
+
+    
   };
+
+  const handleRemember = (event) => 
+  {
+    setRemember(event.target.checked)
+    console.log(event.target.checked)
+  }
 
   return (
     <ThemeProvider theme={theme}>
@@ -61,7 +105,7 @@ export default function Login(props) {
         <div className="div"><span className="dot"></span></div>
         <div className="div"><span className="dot"></span></div>
         <div className="div"><span className="dot"></span></div>
-      <Container maxWidth="sm">
+      <Container maxWidth="sm" sx={{minHeight:`calc(100vh - ${props.height}px)`}}>
         <CssBaseline />
         <Box
           sx={{
@@ -85,10 +129,10 @@ export default function Login(props) {
               margin="normal"
               required
               fullWidth
-              id="email"
-              label="Email Address"
-              name="email"
-              autoComplete="email"
+              id="username"
+              label="Username"
+              name="username"
+              autoComplete=""
               autoFocus
             />
             <TextField
@@ -102,13 +146,16 @@ export default function Login(props) {
               autoComplete="current-password"
             />
             <FormControlLabel
-              control={<Checkbox value="remember" color="primary" />}
+              control={<Checkbox value="remember" color="primary" onChange={handleRemember}/>}
               label="Remember me"
             />
             <Button
               type="submit"
               fullWidth
               variant="contained"
+              onClick={() => {
+                setLoading(true)
+              }}
               sx={{ mt: 3, mb: 2 }}
             >
               Sign In
@@ -125,6 +172,7 @@ export default function Login(props) {
                 </Link>
               </Grid>
             </Grid>
+              {isLoading &&<LinearProgress sx={{mt:2}}/>}
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
