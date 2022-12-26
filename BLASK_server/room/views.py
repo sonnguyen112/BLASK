@@ -4,7 +4,8 @@ from rest_framework.response import Response
 from rest_framework import status
 from quiz.models import *
 from .dtos import *
-
+import random
+from .models import *
 # Create your views here.
 
 @api_view(['GET'])
@@ -21,6 +22,44 @@ def get_quiz(request, slug):
         dto = GetQuizDTO(quiz, list_question, list_option)
         return Response(vars(dto), status = status.HTTP_200_OK)
 
+    except Exception as e:
+        return Response({
+            "error": str(e)
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['GET'])
+@permission_classes([IsAuthenticated])
+def create_room(request):
+    try:
+        pin = str(random.randint(100000, 999999))
+        if Room.objects.filter(pin = pin).exists():
+            return Response({
+                "message" : "Room is exist"
+            }, status = status.HTTP_409_CONFLICT)
+        room = Room.objects.create(pin = pin, host = request.user)
+        room.save()
+        dto = CreateRoomDTO(room)
+        return Response(vars(dto), status = status.HTTP_200_OK)
+
+    except Exception as e:
+        return Response({
+            "error": str(e)
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+
+@api_view(['DELETE'])
+@permission_classes([IsAuthenticated])
+def delete_room(request, pin):
+    try:
+        room = Room.objects.get(pin = pin)
+        room.delete()
+        return Response(
+            {
+                "message": 'the room has alreadly been deleted'
+            },
+            status=status.HTTP_200_OK
+        )
     except Exception as e:
         return Response({
             "error": str(e)

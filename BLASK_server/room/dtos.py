@@ -1,3 +1,5 @@
+from rest_framework.authtoken.models import Token
+
 class GetQuizDTO():
     def __init__(self, quiz, list_question, list_option) -> None:
         self.title = quiz.title
@@ -28,3 +30,9 @@ class GetQuizDTO():
                 "image_option_url": option.imageOptionUrl
             })
         return parse_list_option
+
+
+class CreateRoomDTO():
+    def __init__(self, room) -> None:
+        self.pin = room.pin
+        self.token = Token.objects.get(user = room.host).key
