@@ -33,10 +33,8 @@ def get_quiz(request, slug):
 def create_room(request):
     try:
         pin = str(random.randint(100000, 999999))
-        if Room.objects.filter(pin = pin).exists():
-            return Response({
-                "message" : "Room is exist"
-            }, status = status.HTTP_409_CONFLICT)
+        while Room.objects.filter(pin = pin).exists():
+            pin = str(random.randint(100000, 999999))
         room = Room.objects.create(pin = pin, host = request.user)
         room.save()
         dto = CreateRoomDTO(room)
