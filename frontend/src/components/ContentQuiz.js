@@ -42,12 +42,14 @@ const ContentQuiz = (props) =>
           setSelectedImage(newQuestion[id-1].img)
           setName(newQuestion[id-1].name)
           setAnswer(newQuestion[id-1].answer)
+          setCorrect(newQuestion[id-1].correct)
           setDisplayIndex(id-1)
         }
         else{
           setSelectedImage(newQuestion[id].img)
           setName(newQuestion[id].name)
           setAnswer(newQuestion[id].answer)
+          setCorrect(newQuestion[id].correct)
         }
         
         console.log(id)

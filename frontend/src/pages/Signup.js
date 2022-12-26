@@ -4,6 +4,7 @@ import Button from '@mui/material/Button';
 import CssBaseline from '@mui/material/CssBaseline';
 import TextField from '@mui/material/TextField';
 import FormControlLabel from '@mui/material/FormControlLabel';
+import LinearProgress from '@mui/material/LinearProgress';
 import Checkbox from '@mui/material/Checkbox';
 import Link from '@mui/material/Link';
 import Grid from '@mui/material/Grid';
@@ -34,6 +35,7 @@ function Copyright(props) {
 const theme = createTheme();
 
 export default function SignUp() {
+    const [isLoading, setLoading] = React.useState(false)
     const pattern_email = /(\S+@\w+\.\w+)/;
     const pattern_special_character = /(\d)/;
 
@@ -44,13 +46,14 @@ export default function SignUp() {
     const data = new FormData(event.currentTarget);
     const firstname = data.get('firstName');
     const lastname = data.get('lastName');
+    const username = data.get('username');
     const email = data.get('email');
     const password_1 = data.get('password_1');
     const password_2 = data.get('password_2');
 
     let message = {
-        name: '',
-        password: '',
+      name: '',
+      password: '',
         email: '',
         check: false
     }
@@ -86,14 +89,43 @@ export default function SignUp() {
 
     if (!message.check)
     {
-        sendDataSignup(message)
+        sendDataSignup()
+    }
+    else{
+      setLoading(false)
+    }
+
+    function sendDataSignup()
+    {
+      const signUpData = {
+        "username" : username,
+        "email" : email,
+        "password" : password_1,
+        "password_confirm" : password_2,
+        "firstname" : firstname,
+        "lastname": lastname
+      }
+      setLoading(true)
+      fetch("http://localhost:8000/auth/api/sign_up",  {
+            mode: 'cors',
+            method: "POST",
+            headers: [['Content-Type', 'application/json']],  
+            body: JSON.stringify(signUpData),
+        })
+            .then((response) =>
+            { 
+              console.log(`%response%`)
+              response.json()
+              
+            })
+            .then((data) => 
+            {
+              setLoading(false)
+              console.log(data)
+            });
     }
   };
-
-  function sendDataSignup(data)
-  {
-    //send data
-  }
+  
 
   return (
     <ThemeProvider theme={theme}>
@@ -159,12 +191,22 @@ export default function SignUp() {
                 <TextField
                   required
                   fullWidth
+                  id="username"
+                  label="Username"
+                  name="username"
+                  autoComplete=""
+                  />
+              </Grid>
+              <Grid item xs={12}>
+                <TextField
+                  required
+                  fullWidth
                   id="email"
                   label="Email Address"
                   name="email"
                   autoComplete="email"
                 />
-              </Grid>
+                </Grid>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -198,10 +240,14 @@ export default function SignUp() {
               type="submit"
               fullWidth
               variant="contained"
+              onClick={() => {
+                setLoading(true)
+              }}
               sx={{ mt: 3, mb: 2 }}
             >
               Sign Up
             </Button>
+            
             {errorMessage.check && <Alert severity="error" sx={{m:2, width: {md: '400px', xl: '600px'}}}>
                 <AlertTitle>Error</AlertTitle>
                 <Typography  variant='body2'>
@@ -224,11 +270,13 @@ export default function SignUp() {
                 </Link>
               </Grid>
             </Grid>
+            {isLoading &&<LinearProgress sx={{mt:2}}/>}
           </Box>
         </Box>
         <Copyright sx={{ mt: 5 }} />
       </Container>
       </Container>
+
       
     </ThemeProvider>
   );
