@@ -1,5 +1,6 @@
 from rest_framework.authtoken.models import Token
 
+
 class GetQuizDTO():
     def __init__(self, quiz, list_question, list_option) -> None:
         self.title = quiz.title
@@ -12,11 +13,11 @@ class GetQuizDTO():
         parse_list_question = []
         for question in list_question:
             parse_list_question.append({
-                "id" : question.id,
-                "description" : question.description,
-                "num_of_second" : question.numOfSecond,
-                "image_question_url" : question.imageQuestionUrl,
-                "score" : question.score
+                "id": question.id,
+                "description": question.description,
+                "num_of_second": question.numOfSecond,
+                "image_question_url": question.imageQuestionUrl,
+                "score": question.score
             })
         return parse_list_question
 
@@ -25,8 +26,8 @@ class GetQuizDTO():
         for option in list_option:
             parse_list_option.append({
                 "id": option.id,
-                "question" : option.questionOf.id,
-                "content" : option.content,
+                "question": option.questionOf.id,
+                "content": option.content,
                 "image_option_url": option.imageOptionUrl
             })
         return parse_list_option
@@ -35,4 +36,9 @@ class GetQuizDTO():
 class CreateRoomDTO():
     def __init__(self, room) -> None:
         self.pin = room.pin
-        self.token = Token.objects.get(user = room.host).key
+        self.token_host = Token.objects.get(user=room.host).key
+
+
+class JoinRoomDTO():
+    def __init__(self, room) -> None:
+        self.token_host = Token.objects.get(user=room.host).key
