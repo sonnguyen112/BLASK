@@ -134,10 +134,6 @@ def get_one_quiz(request, slug):
 @permission_classes([IsAuthenticated])
 def update_quiz(request, slug):
     try:
-        if not slug:
-            return Response({
-                "message": "can not find the quiz"
-            }, status=status.HTTP_404_NOT_FOUND)
         data = request.data
 
         if "imageQuizUrl" in data:
@@ -230,12 +226,6 @@ def update_quiz(request, slug):
 @permission_classes([IsAuthenticated])
 def delete_one_quiz(request, slug):
     try:
-        if not slug:
-            return Response({
-                "message": "can not find the quiz"
-            },
-                status=status.HTTP_404_NOT_FOUND
-            )
         obj = Quiz.objects.get(slug=slug)
         obj.delete()
         return Response(
@@ -245,11 +235,9 @@ def delete_one_quiz(request, slug):
             status=status.HTTP_200_OK
         )
     except Exception as e:
-        print(e)
-    return Response({
-        'status': "False",
-        'message': 'Something went wrong'
-    })
+        return Response({
+            "error": str(e)
+        }, status=status.HTTP_400_BAD_REQUEST)
 
 
 # DELETE ALL QUIZS
