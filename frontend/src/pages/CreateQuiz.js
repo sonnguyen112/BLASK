@@ -1,80 +1,184 @@
-import {Box, AppBar, Toolbar, Typography, Button, CssBaseline, Divider, OutlinedInput, FormControl} from "@mui/material"
-import AdbIcon from '@mui/icons-material/Adb';
-import { Link } from 'react-router-dom';
-import React, { useState, useEffect, useRef } from 'react'
+import {
+  Box,
+  CssBaseline,
+  Dialog,
+  DialogTitle,
+  DialogContent,
+  DialogContentText,
+} from "@mui/material";
 
-import ContentQuiz from "../components/ContentQuiz"
+import React, { useEffect, useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-const CreateQuiz = () => {
-  
-  const [height, setHeight] = useState(0)
-  const ref = useRef(null)
+import CreateBar from "../components/CreateBar";
+import ContentQuiz from "../components/ContentQuiz";
+import defaultImage from "../assets/images/Grey_thumb.png";
+
+const CreateQuiz = (props) => {
+  const [height, setHeight] = useState(0);
+  const [title, setTitle] = useState("");
+  const [imgQuiz, setImgQuiz] = useState("");
+  let navigate = useNavigate();
+  const defaultQuestion = {
+    name: "Question",
+    options: [
+      { content: "", is_true: false },
+      { content: "", is_true: false },
+      { content: "", is_true: false },
+      { content: "", is_true: false },
+    ],
+    imageQuestionUrl: defaultImage,
+    point: 50,
+    time: 10,
+  };
+  const [question, setQuestion] = useState([defaultQuestion]);
+  const [open, setOpen] = useState(false);
+  const [messageError, setMessageError] = useState({
+    title: "",
+    quizAns: "",
+    quizName: "",
+    quizCorrect: "",
+  });
 
   useEffect(() => {
-    setHeight(ref.current.clientHeight)
-  },[height])
+    if (props.edit === true) {
+      setTitle(props.quiz.title);
+      setImgQuiz(props.quiz.imageQuizUrl);
+      setQuestion(props.quiz.questions);
+    }
+  }, [props]);
 
- 
-
-  const ToolBar = () => 
-  {
-    return(
-        <AppBar position="static" sx={{backgroundColor:"#fff"}} ref={ref}>
-          <Toolbar id="back-to-top-anchor" sx={{p:0.5}}>
-          <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 , color:'#9C27B0'}} />
-            
-            <Typography component={Link} to='/'
-              variant="h6"
-              noWrap
-              sx={{
-                mr: 2,
-                display: { xs: 'none', md: 'flex' },
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                letterSpacing: '.3rem',
-                color: '#9C27B0',
-                textDecoration: 'none',
-              }}
-            >
-              BLASK
-            </Typography>
-            <Divider orientation="vertical" variant="middle" sx={{display:{xs:'none', md: 'inline'}, mr:{xs:0, md:2}}} flexItem/>
-            <Typography
-                variant="h5"
-                noWrap
-                component={Link} to='/' 
-                sx={{
-                mr: 0,
-                display: { xs: 'flex', md: 'none' },
-                flexGrow: 1,
-                fontFamily: 'monospace',
-                fontWeight: 700,
-                color:'#9C27B0',
-                textDecoration: 'none',
-                }}
-            >
-                BLASK
-            </Typography>
-            <Box sx={{flexGrow:1}}>
-            <FormControl sx={{ width: {md:'25ch',xs:'18ch'}}}>
-              <OutlinedInput placeholder="Please enter title" required color="secondary"/>
-            </FormControl>
-            </Box>
-            <Box sx={{ flexGrow: 0 }}>
-              <Button variant="contained" sx={{display:{xs:"none", md:"inline"},backgroundColor:"#dcdcdc", color:"#000", mr:1}}>Exit</Button>
-              <Button variant="contained" color="secondary">Save</Button>
-            </Box>
-          </Toolbar>
-        </AppBar>
-    )
+  const handleTitle = (value) => {
+    setTitle(value);
   };
 
-  
-    return (<Box>
-        <CssBaseline />
-        <ToolBar/>
-        <ContentQuiz height={height}/>
-    </Box>)
+  const handleClose = () => {
+    setOpen(false);
   };
-  
-  export default CreateQuiz;
+
+  const handleSave = () => {
+    const quizCreate = {
+      title: title,
+      description: "No description",
+      questions: question,
+    };
+
+    if (imgQuiz.trim() !== "") {
+      quizCreate.imageQuizUrl = imgQuiz.substring(
+        imgQuiz.search("base64,") + 7
+      );
+    }
+    var checkError = false;
+    var message = { title: "", quizAns: "", quizName: "", quizCorrect: "" };
+
+    if (quizCreate.title.trim() === "") {
+      checkError = true;
+      message.title = "Please set the title of quiz.";
+    }
+    for (let i = 0; i < quizCreate.questions.length; i++) {
+      quizCreate.questions[i].imageQuestionUrl = quizCreate.questions[
+        i
+      ].imageQuestionUrl.substring(
+        quizCreate.questions[i].imageQuestionUrl.search("base64,") + 7
+      );
+
+      quizCreate.questions[i].options = quizCreate.questions[i].options.filter(
+        (opt) => opt.content.trim() !== ""
+      );
+
+      let count = quizCreate.questions[i].options.length;
+      let correct = quizCreate.questions[i].options.filter(
+        (opt) => opt.is_true === true
+      ).length;
+
+      if (count < 2) {
+        checkError = true;
+        message.quizAns = message.quizAns.concat(`${i + 1} `);
+      }
+      if (correct < 1) {
+        checkError = true;
+        message.quizCorrect = message.quizCorrect.concat(`${i + 1} `);
+      }
+      if (quizCreate.questions[i].name.trim() === "") {
+        checkError = true;
+        message.quizName = message.quizName.concat(`${i + 1} `);
+      }
+    }
+    if (checkError) {
+      console.log(message);
+      setOpen(checkError);
+      setMessageError(message);
+    } else {
+      fetchCreateQuiz(quizCreate);
+    }
+  };
+  async function fetchCreateQuiz(quizCreate) {
+    const response = await fetch(
+      "http://localhost:8000/quiz/api/create_quiz/",
+      {
+        mode: "cors",
+        method: "POST",
+        headers: [
+          ["Content-Type", "application/json"],
+          ["Authorization", "token " + props.token],
+        ],
+        body: JSON.stringify(quizCreate),
+      }
+    );
+    navigate("/library");
+  }
+
+  return (
+    <Box>
+      <CssBaseline />
+      <CreateBar
+        setHeight={setHeight}
+        height={height}
+        handleTitle={handleTitle}
+        setImgQuiz={setImgQuiz}
+        handleSave={handleSave}
+      />
+      <Dialog
+        open={open}
+        onClose={handleClose}
+        aria-labelledby="alert-dialog-title"
+        aria-describedby="alert-dialog-description"
+      >
+        <DialogTitle id="alert-dialog-title" color="secondary">
+          {"All question need to be completed"}
+        </DialogTitle>
+        <DialogContent>
+          {messageError.title.trim() !== "" && (
+            <DialogContentText id="alert-dialog-description">
+              Please type the title of quiz.
+            </DialogContentText>
+          )}
+          {messageError.quizName.trim() !== "" && (
+            <DialogContentText id="alert-dialog-description">
+              Please type the name of question {messageError.quizName}.
+            </DialogContentText>
+          )}
+          {messageError.quizAns.trim() !== "" && (
+            <DialogContentText id="alert-dialog-description">
+              Please enter at least two answers of question{" "}
+              {messageError.quizAns}.
+            </DialogContentText>
+          )}
+          {messageError.quizCorrect.trim() !== "" && (
+            <DialogContentText id="alert-dialog-description">
+              Please choose at least one correct answer of question{" "}
+              {messageError.quizCorrect}.
+            </DialogContentText>
+          )}
+        </DialogContent>
+      </Dialog>
+      <ContentQuiz
+        height={height}
+        question={question}
+        setQuestion={setQuestion}
+      />
+    </Box>
+  );
+};
+
+export default CreateQuiz;

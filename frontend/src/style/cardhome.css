@@ -1,23 +1,18 @@
-
-
-.cardhome:hover
-{
-    animation: animationEffect 10s 1;
+.cardhome:hover {
+  animation: animationEffect 10s 1;
 }
 
-
-@keyframes animationEffect{
-    0%{
-        transform: translateY(0);
-    }
-    10%{
-        transform: translateY(-15%);
-    }
-    90%{
-        transform: translateY(-15%);
-    }
-    100%{
-        transform: translateY(0);
-    }
-
+@keyframes animationEffect {
+  0% {
+    transform: translateY(0);
+  }
+  10% {
+    transform: translateY(-15%);
+  }
+  90% {
+    transform: translateY(-15%);
+  }
+  100% {
+    transform: translateY(0);
+  }
 }
