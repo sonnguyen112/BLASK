@@ -1,4 +1,5 @@
 @import url("https://fonts.googleapis.com/css2?family=Asap&family=Roboto:ital,wght@0,500;0,900;1,500&display=swap");
+@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
 
 room-body{
 	width: 100%;
@@ -1475,8 +1476,8 @@ room-body{
   
   @keyframes typing{
 	0%{ width: 0ch} /*Text is hidden*/
-	30%{ width: 20ch;} /*The enitre header will be typed out*/
-	80%{ width: 20ch;} /*Text stays visible*/
+	30%{ width: 18ch;} /*The enitre header will be typed out*/
+	80%{ width: 18ch;} /*Text stays visible*/
 	90%{ width: 0ch;} /*Text is deleted*/
 	100%{ width: 0ch;} /*Text stays hidden*/
   }
@@ -1505,6 +1506,7 @@ room-body{
     text-align: left;
     align-items: center;
     font-weight: bold;
+	font-family: 'Josefin Sans', sans-serif;
     box-shadow: rgba(149, 157, 165, 0.2) 0px 8px 24px;
     border-radius: 4px;
     transition: 0.25s;
