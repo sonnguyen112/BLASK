@@ -1,8 +1,10 @@
 import BLASKItem from "../components/BlaskItem"
+import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react"
 import "../App.css"
 
-const Library = (props) => {
+const Library = (props) => {  
+  let navigate = useNavigate(); 
   const [quizs, setQuizs] = useState(Array(0).fill(null))
   useEffect(() => {
     async function GetData(url = '') {
@@ -11,7 +13,7 @@ const Library = (props) => {
         mode: 'cors', // no-cors, *cors, same-origin
         headers: {
           'Content-Type': 'application/json',
-          'Authorization': 'token cc4e84687c53e5481df8df6a31be4cac9b0859a7'
+          'Authorization': 'token ' + props.token
         },
       });
       // Default options are marked with *
@@ -31,7 +33,7 @@ const Library = (props) => {
       mode: 'cors', // no-cors, *cors, same-origin
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'token cc4e84687c53e5481df8df6a31be4cac9b0859a7'
+        'Authorization': 'token ' + props.token
       },
     });
     const response2 = await fetch('http://localhost:8000/room/api/create_room/', {
@@ -39,12 +41,16 @@ const Library = (props) => {
       mode: 'cors', // no-cors, *cors, same-origin
       headers: {
         'Content-Type': 'application/json',
-        'Authorization': 'token cc4e84687c53e5481df8df6a31be4cac9b0859a7'
+        'Authorization': 'token ' + props.token
       },
     });
     let data = await response.json()
     let data2 = await response2.json()
-    console.log(data2)
+    navigate('/room', {state: {
+      question_info: data,
+      quiz_info: data2,
+      my_token: props.token
+    }})
   };
   return (
     <div className="blask-list">

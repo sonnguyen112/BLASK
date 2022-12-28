@@ -1475,8 +1475,8 @@ room-body{
   
   @keyframes typing{
 	0%{ width: 0ch} /*Text is hidden*/
-	30%{ width: 15ch;} /*The enitre header will be typed out*/
-	80%{ width: 15ch;} /*Text stays visible*/
+	30%{ width: 20ch;} /*The enitre header will be typed out*/
+	80%{ width: 20ch;} /*Text stays visible*/
 	90%{ width: 0ch;} /*Text is deleted*/
 	100%{ width: 0ch;} /*Text stays hidden*/
   }
@@ -1497,6 +1497,7 @@ room-body{
     display: flex;
     height: 3.5rem;
     width: 10rem;
+	color: #000;
     background-color: #effbfa;
     margin: 1.5rem 0.5rem;
     justify-content: center;
