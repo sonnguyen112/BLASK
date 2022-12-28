@@ -1,39 +1,66 @@
 import BLASKItem from "../components/BlaskItem"
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react"
 import "../App.css"
 
-const Library = () => {
-    return (
-      <div className="blask-list">
-        <BLASKItem 
-          image="https://bluemetropolis.org/wp-content/uploads/2020/10/quiz.jpg"
-          avatar="https://images.vexels.com/media/users/3/154255/isolated/preview/9afaf910583333c167e40ee094e12cfa-cat-animal-avatar.png"
-          title="Quiz for Bảo"
-          author="Hà Thiên Lộc"
-          edit_time="Updated 8 months ago">
-        </BLASKItem>
-        <BLASKItem 
-          image="https://bluemetropolis.org/wp-content/uploads/2020/10/quiz.jpg"
-          avatar="https://images.vexels.com/media/users/3/154255/isolated/preview/9afaf910583333c167e40ee094e12cfa-cat-animal-avatar.png"
-          title="Quiz for Bảo"
-          author="Hà Thiên Lộc"
-          edit_time="Updated 8 months ago">
-        </BLASKItem>
-        <BLASKItem 
-          image="https://bluemetropolis.org/wp-content/uploads/2020/10/quiz.jpg"
-          avatar="https://images.vexels.com/media/users/3/154255/isolated/preview/9afaf910583333c167e40ee094e12cfa-cat-animal-avatar.png"
-          title="Quiz for Bảo"
-          author="Hà Thiên Lộc"
-          edit_time="Updated 8 months ago">
+const Library = (props) => {  
+  let navigate = useNavigate(); 
+  const [quizs, setQuizs] = useState(Array(0).fill(null))
+  useEffect(() => {
+    async function GetData(url = '') {
+      const response = await fetch(url, {
+        method: 'GET', // *GET, POST, PUT, DELETE, etc.
+        mode: 'cors', // no-cors, *cors, same-origin
+        headers: {
+          'Content-Type': 'application/json',
+          'Authorization': 'token ' + props.token
+        },
+      });
+      // Default options are marked with *
+      
+      let data = await response.json();// parses JSON response into native JavaScript objects
+      console.log(data)
+      setQuizs(data["quiz_list"])
+    }
+    GetData('http://localhost:8000/quiz/api/get_all_quiz');
+
+  }
+    , []);
+
+  async function handleCreateRoom(index) {
+    const response = await fetch('http://localhost:8000/room/api/get_quiz/' + quizs[index]['slug'], {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'token ' + props.token
+      },
+    });
+    const response2 = await fetch('http://localhost:8000/room/api/create_room/', {
+      method: 'GET', // *GET, POST, PUT, DELETE, etc.
+      mode: 'cors', // no-cors, *cors, same-origin
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': 'token ' + props.token
+      },
+    });
+    let data = await response.json()
+    let data2 = await response2.json()
+    navigate('/room', {state: {
+      question_info: data,
+      quiz_info: data2,
+      my_token: props.token
+    }})
+  };
+  return (
+    <div className="blask-list">
+      {quizs.map((item, index) => (
+        <BLASKItem username={props.profile["username"]} value={item} onClick={() => handleCreateRoom(index)}>
 
         </BLASKItem>
-        <BLASKItem 
-          image="https://bluemetropolis.org/wp-content/uploads/2020/10/quiz.jpg"
-          avatar="https://images.vexels.com/media/users/3/154255/isolated/preview/9afaf910583333c167e40ee094e12cfa-cat-animal-avatar.png"
-          title="Quiz for Bảo"
-          author="Hà Thiên Lộc"
-          edit_time="Updated 8 months ago">
-        </BLASKItem>
-      </div>
-    )
+      ))
+      }
+    </div>
+  )
 }
-  export default Library;
+export default Library;

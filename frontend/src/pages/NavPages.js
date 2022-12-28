@@ -34,7 +34,10 @@ const NavPages = (props) => {
       <Routes>
         <Route index element={<Home token={props.token} />} />
         <Route path="home" element={<Home token={props.token} />} />
-        <Route path="library" element={<Library token={props.token} />} />
+        <Route
+          path="library"
+          element={<Library profile={props.profile} token={props.token} />}
+        />
         <Route path="reports" element={<Reports token={props.token} />} />
         <Route path="signup" element={<Signup height={height} />} />
         <Route

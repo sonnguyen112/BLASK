@@ -3,6 +3,7 @@ import { BrowserRouter, Routes, Route } from "react-router-dom";
 // import Cookies from 'universal-cookie';
 
 import CreateQuiz from "./pages/CreateQuiz";
+import Room from "./pages/Room";
 import NavPages from "./pages/NavPages";
 import "./App.css";
 import NoPage from "./pages/NoPage";
@@ -42,14 +43,9 @@ function App() {
         />
         <Route
           path="create-quiz"
-          element={
-            token.trim() !== "" ? (
-              <CreateQuiz profile={profile} token={token} />
-            ) : (
-              <NoPage />
-            )
-          }
+          element={<CreateQuiz profile={profile} token={token} />}
         />
+        <Route path="room" element={<Room />} />
       </Routes>
     </BrowserRouter>
   );

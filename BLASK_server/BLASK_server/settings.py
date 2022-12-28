@@ -52,6 +52,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "BLASK_auth",
     "quiz",
+    "room",
 ]
 
 MIDDLEWARE = [
