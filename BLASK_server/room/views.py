@@ -48,7 +48,6 @@ def create_room(request):
 
 
 @api_view(['GET'])
-@permission_classes([IsAuthenticated])
 def join_room(request, pin):
     try:
         room = Room.objects.filter(pin=pin)
