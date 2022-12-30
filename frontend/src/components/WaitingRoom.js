@@ -6,7 +6,7 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import Seat from "./Seat";
 import "../style/waitingroom.css";
 
-const memberHandler = (message, token_me, token_host, navigate, client, member, setMember) => {
+const memberHandler = (message, quiz_info, token_me, token_host, navigate, client, member, setMember) => {
 	console.log("1", message);
 	let tmp_message = JSON.parse(message.data);
 
@@ -31,6 +31,14 @@ const memberHandler = (message, token_me, token_host, navigate, client, member, 
 		}
 		setMember([...member, newmessage]);
 	}
+	const onPlay = async () => {
+		client.close();
+
+		navigate('/play', {state: {
+			quiz_info: quiz_info,
+			name_player: token_me
+		}});
+	}
 	switch (tmp_message.type_action) {
 		case "append":
 			onAppend(tmp_message.name_player, tmp_message.avatar);
@@ -38,6 +46,8 @@ const memberHandler = (message, token_me, token_host, navigate, client, member, 
 		case "delete":
 			onDelete(tmp_message.name_player);
 			break;
+		case "play":
+			onPlay();
 	}
 }
 
@@ -51,15 +61,30 @@ const WaitingRoom = (props) => {
 
 	const navigate = useNavigate();
 
-	
+
 	const client = new W3CWebSocket("ws://127.0.0.1:8000/ws/wait/" + props.PIN + "/");
 
 	const handleKickClick = (index) => {
-		let s = '{ "type_action": "delete", "name_player": "' + member[index].name_player + '", "avatar": "", "is_start": false }'
+		let s = '{ "type_action": "delete", "name_player": "' + member[index].name_player + '", "avatar": ""}'
 
 		client.send(s);
 	};
-
+	async function closeRoom(pin) {
+		const response = await fetch('http://localhost:8000/room/api/delete_room/' + pin, {
+			method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
+			mode: 'cors', // no-cors, *cors, same-origin
+			headers: {
+				'Content-Type': 'application/json',
+				'Authorization': 'token ' + props.token_host
+			},
+		});
+		console.log(response.json())
+	}
+	const handlePlayGame = async () => {
+		await closeRoom(props.PIN);
+		let s = '{ "type_action": "play", "name_player": "", "avatar": ""}'
+		client.send(s);
+	}
 	useEffect(() => {
 		const handleTabClose = event => {
 			event.preventDefault();
@@ -70,7 +95,7 @@ const WaitingRoom = (props) => {
 		};
 
 		const handleKickPlayer = () => {
-			let s = '{ "type_action": "delete","name_player": "' + props.token_me + '", "avatar": "", "is_start": false }'
+			let s = '{ "type_action": "delete","name_player": "' + props.token_me + '", "avatar": ""}'
 
 			client.send(s);
 		}
@@ -82,12 +107,12 @@ const WaitingRoom = (props) => {
 			console.log("newmessage")
 			console.log("WebSocket Client Connected");
 			if (props.token_me !== props.token_host) {
-				let s = '{ "type_action": "append", "name_player": "' + props.token_me + '", "avatar": "", "is_start": false }'
-				
+				let s = '{ "type_action": "append", "name_player": "' + props.token_me + '", "avatar": ""}'
+
 				client.send(s);
 			}
 		};
-		client.onmessage = (message) => {memberHandler(message, props.token_me, props.token_host, navigate, client, memberRef.current, setMember)};
+		client.onmessage = (message) => { memberHandler(message, props.quiz_info, props.token_me, props.token_host, navigate, client, memberRef.current, setMember) };
 
 		return () => {
 			console.log("BAO PRO")
@@ -901,7 +926,7 @@ const WaitingRoom = (props) => {
 
 
 				</Seat>
-				<button class="link-to-portfolio"></button>
+				<button class="link-to-portfolio" onClick={handlePlayGame}></button>
 			</div>
 		);
 	}

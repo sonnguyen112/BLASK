@@ -30,17 +30,14 @@ const JoinIn = () => {
 
         let data = await response.json()
         data.pin = pin_input;
-        console.log(data)
         if (data.token_host !== "") {
             navigate('/room', {
                 state: {
-                    question_info: null,
                     quiz_info: data,
                     my_token: name_input
                 }
             })
         }
-
     }
     if (is_name_input === false) {
         return (
