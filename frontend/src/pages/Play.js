@@ -4,7 +4,8 @@ import Question from "../components/Question";
 import Questionnaire from "../components/Questionnaire";
 import "../style/play.css";
 
-let data = []
+let data = [];
+let title = "";
 
 const answerHandler = (message, token_me, token_host, client, member, setMember) => {
     let tmp_message = JSON.parse(message.data);
@@ -40,13 +41,15 @@ const Play = () => {
         4. Screen result
         5. Screen final
     */
-    const [index_ques, setIndexQues] = useState(0);
+    const [index_ques, setIndexQues] = useState(-1);
     const [time_interval, setTimeInt] = useState(5);
-    const [time_show_question, setTimeShowQuestion] = useState(5);
+    const [time_show_question, setTimeShowQuestion] = useState(-1);
+    const [time_show_title, setTimeShowTitle] = useState(-1);
 
     useEffect(() => {
         data = []
         let pre_quiz_info = preData.state.quiz_info;
+        title = pre_quiz_info.title;
         console.log(preData);
         for (let i = 0; i < pre_quiz_info.list_question.length; i++) {
             data.push({
@@ -56,10 +59,10 @@ const Play = () => {
                 options: pre_quiz_info.list_option.filter(x => x.question === pre_quiz_info.list_question[i].id).map(x => x.content)
             });
         }
-        setTypeRender(1);
+        setTimeShowTitle(5);
         console.log(data);
 
-        return () => {}
+        return () => { }
     }, [preData])
 
     const handleChoose = (index) => {
@@ -77,11 +80,24 @@ const Play = () => {
     }, [time_show_question]);
 
     useEffect(() => {
-        setTypeRender(1 + (index_ques === data.length ? 4 : 0));
-        if (index_ques !== data.length) {
-            setTimeShowQuestion(5)
+        const interval = setInterval(() => setTimeShowTitle(time_show_title - 1), 1000);
+
+        if (time_show_title === 0) {
+            setIndexQues(0);
+            clearInterval(interval);
         }
+
+        return () => clearInterval(interval);
+    }, [time_show_title]);
+
+    useEffect(() => {
         console.log("index change:", index_ques)
+        if (index_ques >= 0) {
+            setTypeRender(1 + (index_ques === data.length ? 4 : 0));
+            if (index_ques !== data.length) {
+                setTimeShowQuestion(5)
+            }
+        }
     }, [index_ques])
 
     useEffect(() => {
@@ -101,6 +117,13 @@ const Play = () => {
         setTypeRender(4);
     }
     switch (typeRender) {
+        case 0:
+            return (
+                <div className="container">
+                    {title}
+                    <div class="loader-5 center"><span></span></div>
+                </div>
+            )
         case 1:
             return (
                 <div className="container">
