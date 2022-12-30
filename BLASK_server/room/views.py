@@ -45,7 +45,7 @@ def create_room(request, slug):
                 list_option.append(option)
         room = Room.objects.create(pin=pin, host=request.user, quiz=quiz)
         room.save()
-        dto = CreateRoomDTO(room, list_question, list_option)
+        dto = CreateRoomDTO(room,quiz, list_question, list_option)
         return Response(vars(dto), status=status.HTTP_200_OK)
 
     except Exception as e:

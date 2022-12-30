@@ -34,8 +34,10 @@ from rest_framework.authtoken.models import Token
 
 
 class CreateRoomDTO():
-    def __init__(self, room, list_question, list_option) -> None:
+    def __init__(self, room, quiz, list_question, list_option) -> None:
         self.pin = room.pin
+        self.title = quiz.title
+        self.description = quiz.description
         self.token_host = Token.objects.get(user=room.host).key
         self.list_question = self.parse_list_question(list_question)
         self.list_option = self.parse_list_option(list_option)
