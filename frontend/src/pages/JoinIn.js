@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { w3cwebsocket as W3CWebSocket } from "websocket";
 import { useNavigate } from "react-router-dom";
 import "../style/joinin.css"
 
@@ -20,23 +19,28 @@ const JoinIn = () => {
         }
     }
     async function handleAskJoinRoom() {
-        let client = await new W3CWebSocket("ws://127.0.0.1:8000/ws/wait/" + pin_input + "/");
-        console.log(name_input)
-        client.onopen = () => {
-            console.log("WebSocket Client Connected");
-            let s = '{ "name_player": "'+ name_input +'", "avatar": "", "is_start": false }'
-            console.log(s);
-            client.send(s);
-            let data2 = {
-                pin: pin_input,
-                token_host: null
-            };
-            navigate('/room', {state: {
-                question_info: null,
-                quiz_info: data2,
-                my_token: 1
-            }})
-        };
+        console.log(pin_input)
+        const response = await fetch('http://localhost:8000/room/api/join_room/' + pin_input, {
+            method: 'GET', // *GET, POST, PUT, DELETE, etc.
+            mode: 'cors', // no-cors, *cors, same-origin
+            headers: {
+                'Content-Type': 'application/json',
+            },
+        });
+
+        let data = await response.json()
+        data.pin = pin_input;
+        console.log(data)
+        if (data.token_host !== "") {
+            navigate('/room', {
+                state: {
+                    question_info: null,
+                    quiz_info: data,
+                    my_token: name_input
+                }
+            })
+        }
+
     }
     if (is_name_input === false) {
         return (
@@ -75,12 +79,12 @@ const JoinIn = () => {
                         <div className="joinin-logo-blask">
                             BLASK!
                         </div>
-                        <form>
+                        <div>
                             <input name={"gameId"} placeholder="Game PIN" inputMode="numeric" onChange={onPINChange} />
                             <button onClick={handleAskJoinRoom}>
                                 Enter
                             </button>
-                        </form>
+                        </div>
                     </div>
                 </div>
             </div>

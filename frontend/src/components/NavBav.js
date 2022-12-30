@@ -294,7 +294,7 @@ function ResponsiveAppBar(props) {
                 <Tooltip title="Play">
                   <IconButton
                     component={Link}
-                    to="*"
+                    to="joinin"
                     variant="contained"
                     sx={{
                       m: 1,
@@ -353,7 +353,7 @@ function ResponsiveAppBar(props) {
               <Box sx={{ flexGrow: 0 }}>
                 <Button
                   component={Link}
-                  to="*"
+                  to="joinin"
                   variant="contained"
                   sx={{ m: 1, backgroundColor: "#e3f2fd", color: "#000" }}
                 >

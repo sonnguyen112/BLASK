@@ -7,7 +7,7 @@ import Room from "./pages/Room";
 import JoinIn from "./pages/JoinIn";
 import NavPages from "./pages/NavPages";
 import "./App.css";
-import NoPage from "./pages/NoPage";
+import Play from "./pages/Play";
 function App() {
   const emptyProfile = {
     username: "",
@@ -47,6 +47,8 @@ function App() {
           element={<CreateQuiz profile={profile} token={token} />}
         />
         <Route path="room" element={<Room />} />
+        <Route path="joinin" element={<JoinIn />} />
+        <Route path="play" element={<Play />} />
       </Routes>
     </BrowserRouter>
   );
