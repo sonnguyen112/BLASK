@@ -46,7 +46,7 @@ def create_quiz(request):
 
             if "imageQuestionUrl" in dataQuestionArray[i]:
                 base64_img = dataQuestionArray[i]["imageQuestionUrl"]
-                quiz_img_url = decode_base64(base64_img)
+                question_img_url = decode_base64(base64_img)
             else:
                 question_img_url = f"http://localhost:8000/media/default.jpg"
 
@@ -70,7 +70,7 @@ def create_quiz(request):
 
                 if "imageOptionUrl" in dataOptionArray[j]:
                     base64_img = dataOptionArray[j]["imageQuestionUrl"]
-                    quiz_img_url = decode_base64(base64_img)
+                    option_img_url = decode_base64(base64_img)
                 else:
                     option_img_url = f"http://localhost:8000/media/default.jpg"
 
@@ -165,7 +165,7 @@ def update_quiz(request, slug):
         for question_obj in question_objs:
             if "imageQuestionUrl" in dataQuestionArray[i]:
                 base64_img = dataQuestionArray[i]["imageQuestionUrl"]
-                quiz_img_url = decode_base64(base64_img)
+                question_img_url = decode_base64(base64_img)
             else:
                 question_img_url = f"http://localhost:8000/media/default.jpg"
 
@@ -192,7 +192,7 @@ def update_quiz(request, slug):
             for option_obj in option_objs:
                 if "imageOptionUrl" in dataOptionArray[j]:
                     base64_img = dataOptionArray[j]["imageQuestionUrl"]
-                    quiz_img_url = decode_base64(base64_img)
+                    option_img_url = decode_base64(base64_img)
                 else:
                     option_img_url = f"http://localhost:8000/media/default.jpg"
                 dataSubOption = {
