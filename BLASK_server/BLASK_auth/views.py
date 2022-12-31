@@ -33,10 +33,9 @@ def sign_up(request):
             user = User.objects.create_user(
                 username=username, password=password, email=email)
             user.save()
-            avatar_img_url = f"http://localhost:8000/media/default.jpg"
 
             user_profile = UserProfile.objects.create(
-                first_name=first_name, last_name=last_name, user=user, profile_pic=avatar_img_url)
+                first_name=first_name, last_name=last_name, user=user, profile_pic="default.jpg")
             user_profile.save()
             return Response({
                 "message": "User created successfully",

@@ -7,4 +7,5 @@ urlpatterns = [
     path("api/update_quiz/<str:slug>/", update_quiz, name="update_quiz"),
     path("api/delete_one_quiz/<str:slug>/",delete_one_quiz,name="delete_one_quiz"),
     path("api/delete_all_quiz/", delete_all_quiz, name="delete_all_quiz"),
+    path("api/update_profile/", update_profile),
 ]

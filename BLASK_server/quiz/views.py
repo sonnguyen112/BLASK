@@ -7,6 +7,8 @@ from rest_framework import status
 import uuid
 from project_utils.common import decode_base64
 from .dtos import *
+from BLASK_auth.models import UserProfile
+from django.contrib.auth.models import User
 
 # QUIZ############################################################################################################################################################################################################################################
 
@@ -251,3 +253,35 @@ def delete_all_quiz(request):
         },
         status=status.HTTP_200_OK
     )
+
+
+@api_view(["PATCH"])
+@permission_classes([IsAuthenticated])
+def update_profile(request):
+    user = request.user
+    user_profile = UserProfile.objects.get(user = user)
+    username = request.data.get('username')
+    email = request.data.get('email')
+    first_name = request.data.get('first_name')
+    last_name = request.data.get('last_name')
+    user.username = username
+    user.email = email
+    user.save()
+    user_profile.first_name = first_name
+    user_profile.last_name = last_name
+    try:
+        if request.data.get('upload'):
+            file = request.data.get('upload')
+            user_profile.profile_pic = file
+            user_profile.save()
+        return Response(
+            {
+                "message": 'the profile has alreadly been updated'
+            },
+            status=status.HTTP_200_OK
+        )
+    
+    except Exception as e:
+        return Response({
+            "error": str(e)
+        }, status=status.HTTP_400_BAD_REQUEST)
