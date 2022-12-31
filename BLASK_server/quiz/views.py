@@ -21,7 +21,7 @@ def create_quiz(request):
 
         if "imageQuizUrl" in data:
             base64_img = data["imageQuizUrl"]
-            quiz_img_url = decode_base64(base64_img)
+            quiz_img_url = decode_base64(base64_img, "quiz_img")
         else:
             quiz_img_url = f"http://localhost:8000/media/default.jpg"
 
@@ -46,7 +46,7 @@ def create_quiz(request):
 
             if "imageQuestionUrl" in dataQuestionArray[i]:
                 base64_img = dataQuestionArray[i]["imageQuestionUrl"]
-                question_img_url = decode_base64(base64_img)
+                question_img_url = decode_base64(base64_img, "question_img")
             else:
                 question_img_url = f"http://localhost:8000/media/default.jpg"
 
@@ -70,7 +70,7 @@ def create_quiz(request):
 
                 if "imageOptionUrl" in dataOptionArray[j]:
                     base64_img = dataOptionArray[j]["imageOptionUrl"]
-                    option_img_url = decode_base64(base64_img)
+                    option_img_url = decode_base64(base64_img, "option_img")
                 else:
                     option_img_url = f"http://localhost:8000/media/default.jpg"
 
@@ -138,7 +138,7 @@ def update_quiz(request, slug):
 
         if "imageQuizUrl" in data:
             base64_img = data["imageQuizUrl"]
-            quiz_img_url = decode_base64(base64_img)
+            quiz_img_url = decode_base64(base64_img, "quiz_img")
         else:
             quiz_img_url = f"http://localhost:8000/media/default.jpg"
 
@@ -161,6 +161,7 @@ def update_quiz(request, slug):
 
         question_objs = Question.objects.filter(
             quizOf=serializerQuiz.data['id'])
+        
         i = 0
         for question_obj in question_objs:
             if "imageQuestionUrl" in dataQuestionArray[i]:
