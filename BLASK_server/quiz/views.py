@@ -69,7 +69,7 @@ def create_quiz(request):
             for j in range(len(dataOptionArray)):
 
                 if "imageOptionUrl" in dataOptionArray[j]:
-                    base64_img = dataOptionArray[j]["imageQuestionUrl"]
+                    base64_img = dataOptionArray[j]["imageOptionUrl"]
                     option_img_url = decode_base64(base64_img)
                 else:
                     option_img_url = f"http://localhost:8000/media/default.jpg"
@@ -191,7 +191,7 @@ def update_quiz(request, slug):
             j = 0
             for option_obj in option_objs:
                 if "imageOptionUrl" in dataOptionArray[j]:
-                    base64_img = dataOptionArray[j]["imageQuestionUrl"]
+                    base64_img = dataOptionArray[j]["imageOptionUrl"]
                     option_img_url = decode_base64(base64_img)
                 else:
                     option_img_url = f"http://localhost:8000/media/default.jpg"
