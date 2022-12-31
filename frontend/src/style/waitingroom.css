@@ -1,5 +1,6 @@
 @import url("https://fonts.googleapis.com/css2?family=Asap&family=Roboto:ital,wght@0,500;0,900;1,500&display=swap");
 @import url('https://fonts.googleapis.com/css2?family=Josefin+Sans&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@900&display=swap');
 
 room-body{
 	width: 100%;
@@ -1536,4 +1537,42 @@ room-body{
 	box-shadow: 0 0 0 2px rgba(0,0,0,.1);
 	transition: opacity .2s, border-radius .2s, box-shadow .2s;
 	transition-timing-function: ease-out;
+}
+
+/* for waiting player */
+.container-w {
+    position: absolute;
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    inset: 0;
+
+	color: #fff;
+    font-family: 'Montserrat', sans-serif;
+	
+    z-index: 21;
+
+}
+
+.container-w h1 {
+	font-size: 3em;
+	font-weight: 1000;
+	text-shadow: -1px -1px 0px #8C92AC,
+    1px 1px 0px #8C92AC,
+    2px 2px 0px #000;
+}
+
+.container-w h2 {
+	text-shadow: -1px -1px 3px #020202, 
+      2px 2px 4px #1b1b1b;
+}
+
+.blur-w {
+    position: absolute;
+    background-color: black;
+    opacity: 10%;
+    inset: 0;
+    z-index: 20;
 }

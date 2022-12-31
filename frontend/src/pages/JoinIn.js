@@ -16,6 +16,9 @@ const JoinIn = () => {
     const handleSubmitName = () => {
         if (is_name_input !== "") {
             setCheck(true);
+            Array.from(document.querySelectorAll("input")).forEach(
+                input => (input.value = "")
+            );
         }
     }
     async function handleAskJoinRoom() {
@@ -53,7 +56,7 @@ const JoinIn = () => {
                             BLASK!
                         </div>
                         <div className="joinin-fakeform">
-                            <input name={"NamePlayer"} placeholder="Your Nickname" inputMode="text" onChange={onNAMEChange} />
+                            <input name={"NamePlayer"} placeholder="Your Nickname" defaultValue="" inputMode="text" onChange={onNAMEChange} />
                             <button type='button' onClick={handleSubmitName}>
                                 Enter
                             </button>
@@ -76,8 +79,8 @@ const JoinIn = () => {
                         <div className="joinin-logo-blask">
                             BLASK!
                         </div>
-                        <div>
-                            <input name={"gameId"} placeholder="Game PIN" inputMode="numeric" onChange={onPINChange} />
+                        <div className="joinin-realform">
+                            <input name={"gameId"} placeholder="Game PIN" defaultValue="" inputMode="numeric" onChange={onPINChange} />
                             <button onClick={handleAskJoinRoom}>
                                 Enter
                             </button>
