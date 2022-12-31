@@ -90,7 +90,6 @@ def create_quiz(request):
                     }, status=status.HTTP_400_BAD_REQUEST)
         return Response({
             "message": "Created Quiz Successfully",
-            "id": serializerQuiz.data["id"]
         }, status=status.HTTP_201_CREATED)
     except Exception as e:
         return Response({
@@ -157,16 +156,19 @@ def update_quiz(request, slug):
             return Response({
                 'message': 'Fail to update quiz',
             }, status=status.HTTP_400_BAD_REQUEST)
-        dataQuestionArray = data['questions']
 
         question_objs = Question.objects.filter(
             quizOf=serializerQuiz.data['id'])
-        
-        i = 0
+
         for question_obj in question_objs:
+            question_obj.delete()
+
+        dataQuestionArray = data['questions']
+        for i in range(len(dataQuestionArray)):
+
             if "imageQuestionUrl" in dataQuestionArray[i]:
                 base64_img = dataQuestionArray[i]["imageQuestionUrl"]
-                question_img_url = decode_base64(base64_img)
+                question_img_url = decode_base64(base64_img, "question_img")
             else:
                 question_img_url = f"http://localhost:8000/media/default.jpg"
 
@@ -175,46 +177,42 @@ def update_quiz(request, slug):
                 'quizOf': serializerQuiz.data['id'],
                 'score': dataQuestionArray[i]['point'],
                 'numOfSecond': dataQuestionArray[i]['time'],
-                "imgQuestionUrl": question_img_url
+                'imageQuestionUrl': question_img_url
             }
-            serializerQuestion = QuestionSerializer(
-                question_obj, data=dataSubQuestion, partial=True)
+            serializerQuestion = QuestionSerializer(data=dataSubQuestion)
             if serializerQuestion.is_valid():
                 serializerQuestion.save()
             else:
                 return Response({
-                    'message': 'Fail to update question in Quiz',
+                    'message': 'Fail to create quiz because requese invalid',
                 }, status=status.HTTP_400_BAD_REQUEST)
 
             dataOptionArray = dataQuestionArray[i]['options']
-            option_objs = Option.objects.filter(
-                questionOf=serializerQuestion.data["id"])
-            j = 0
-            for option_obj in option_objs:
+            for j in range(len(dataOptionArray)):
+
                 if "imageOptionUrl" in dataOptionArray[j]:
                     base64_img = dataOptionArray[j]["imageOptionUrl"]
-                    option_img_url = decode_base64(base64_img)
+                    option_img_url = decode_base64(base64_img, "option_img")
                 else:
                     option_img_url = f"http://localhost:8000/media/default.jpg"
+
                 dataSubOption = {
                     'content': dataOptionArray[j]['content'],
                     'isTrue': dataOptionArray[j]['is_true'],
                     'questionOf': serializerQuestion.data['id'],
-                    "imageOptionUrl": option_img_url
+                    'imageOptionUrl': option_img_url
                 }
-                serializerOption = OptionSerializer(
-                    option_obj, data=dataSubOption, partial=True)
+
+                serializerOption = OptionSerializer(data=dataSubOption)
                 if serializerOption.is_valid():
                     serializerOption.save()
                 else:
                     return Response({
-                        'message': 'Fail to update option in Quiz',
+                        'message': 'Fail to create quiz because requese invalid',
                     }, status=status.HTTP_400_BAD_REQUEST)
-                j += 1
-            i += 1
         return Response({
-                          'message': 'Success to update quiz',
-                        }, status=status.HTTP_200_OK)
+            "message": "Updated Quiz Successfully",
+        }, status=status.HTTP_200_OK)
     except Exception as e:
         print(e)
         return Response({
