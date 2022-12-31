@@ -45,14 +45,7 @@ const ContentQuiz = (props) => {
   const [time, setTime] = React.useState(props.question[0].time);
   const [point, setPoint] = React.useState(props.question[0].point);
 
-  console.log("question 0", props.question[0]);
   useEffect(() => {
-    while (props.question[displayIndex].options.length < 4) {
-      props.question[displayIndex].options.push({
-        content: "",
-        is_true: false,
-      });
-    }
     setOptions(props.question[displayIndex].options);
   }, [props]);
 

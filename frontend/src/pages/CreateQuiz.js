@@ -21,6 +21,7 @@ const CreateQuiz = (props) => {
   const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [imgQuiz, setImgQuiz] = useState("");
+  const [slug, setSlug] = useState("");
   let navigate = useNavigate();
   const location = useLocation();
 
@@ -48,7 +49,7 @@ const CreateQuiz = (props) => {
   useEffect(() => {
     if (location.state) {
       setEdit(location.state.edit);
-      console.log("111111111111111111111111111");
+
       const list_ques = location.state.quiz.list_question;
       const list_opts = location.state.quiz.list_option;
       const ques = [];
@@ -73,8 +74,8 @@ const CreateQuiz = (props) => {
           }
         });
       }
-      console.log("edit", ques);
       setQuestion(ques);
+      setSlug(location.state.slug);
       setImgQuiz(location.state.quiz.imageQuizUrl);
       setTitle(location.state.quiz.title);
     }
@@ -94,7 +95,7 @@ const CreateQuiz = (props) => {
     const quizCreate = {
       title: title,
       description: "No description",
-      questions: question,
+      questions: JSON.parse(JSON.stringify(question)),
     };
 
     if (imgQuiz.trim() !== "") {
@@ -140,29 +141,31 @@ const CreateQuiz = (props) => {
     }
     if (checkError) {
       console.log(message);
+      setLoading(false);
       setOpen(checkError);
       setMessageError(message);
     } else {
-      if (!edit) {
-        fetchCreateQuiz(quizCreate);
-      } else {
-      }
+      console.log("edit", edit);
+      console.log("slug", slug);
+      fetchCreateQuiz(edit, quizCreate);
     }
   };
 
-  async function fetchCreateQuiz(quizCreate) {
-    const response = await fetch(
-      "http://localhost:8000/quiz/api/create_quiz/",
-      {
-        mode: "cors",
-        method: "POST",
-        headers: [
-          ["Content-Type", "application/json"],
-          ["Authorization", "token " + props.token],
-        ],
-        body: JSON.stringify(quizCreate),
-      }
-    );
+  async function fetchCreateQuiz(edit, quizCreate) {
+    const link =
+      edit === 1
+        ? `http://localhost:8000/quiz/api/update_quiz/${slug}/`
+        : "http://localhost:8000/quiz/api/create_quiz/";
+    const methodS = edit === 1 ? "PATCH" : "POST";
+    const response = await fetch(link, {
+      mode: "cors",
+      method: methodS,
+      headers: [
+        ["Content-Type", "application/json"],
+        ["Authorization", "token " + props.token],
+      ],
+      body: JSON.stringify(quizCreate),
+    });
     console.log(quizCreate);
     setLoading(false);
     navigate("/library");
@@ -213,10 +216,11 @@ const CreateQuiz = (props) => {
           )}
         </DialogContent>
       </Dialog>
-
+      <Backdrop open={loading} sx={{ zIndex: 10 }}>
+        <CircularProgress color="secondary" />
+      </Backdrop>
       <ContentQuiz
         height={height}
-        loading={loading}
         question={question}
         setQuestion={setQuestion}
       />
