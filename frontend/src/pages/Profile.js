@@ -1,9 +1,11 @@
-import { Box, Button, Paper, TextField } from "@mui/material";
+import { Box, Button, Paper, TextField, Typography } from "@mui/material";
 import React, { useState, useEffect, useRef } from "react";
 
 import UploadIcon from "@mui/icons-material/Upload";
 const Profile = (props) => {
   const [width, setWidth] = useState(0);
+  const [edit, setEdit] = useState(false);
+  const [profile, setProfile] = useState(props.profile);
   const ref = useRef(null);
 
   useEffect(() => {
@@ -52,8 +54,36 @@ const Profile = (props) => {
                 backgroundSize: "cover",
               }}
             />
-            <Button variant="contained" sx={{ mt: 2 }} endIcon={<UploadIcon />}>
+            <Button
+              disabled={edit ? false : true}
+              variant="contained"
+              sx={{ mt: 2 }}
+              endIcon={<UploadIcon />}
+            >
               Change
+            </Button>
+            <Button
+              variant="contained"
+              sx={{ mt: 2, display: edit ? "none" : "inline-block" }}
+              onClick={() => {
+                setEdit(true);
+              }}
+            >
+              Edit
+            </Button>
+            <Button
+              variant="contained"
+              sx={{
+                mt: 2,
+                display: edit ? "inline-block" : "none",
+                backgroundColor: "#ffffff",
+                color: "#1976d2",
+              }}
+              onClick={() => {
+                setEdit(false);
+              }}
+            >
+              Save
             </Button>
           </Box>
           <Box
@@ -68,7 +98,65 @@ const Profile = (props) => {
               borderColor: "#1976d2",
             }}
           >
-            aaa
+            <Box
+              sx={{
+                display: "flex",
+                flexDirection: "row",
+                alignItems: "center",
+                justifyContent: "space-evenly",
+                width: "100%",
+              }}
+            >
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  minWidth: "15%",
+                }}
+              >
+                <Typography variant="h6" sx={{ marginY: 2.25 }}>
+                  Username
+                </Typography>
+                <Typography variant="h6" sx={{ marginY: 2.25 }}>
+                  First Name
+                </Typography>
+                <Typography variant="h6" sx={{ marginY: 2.25 }}>
+                  Last Name
+                </Typography>
+                <Typography variant="h6" sx={{ marginY: 2.25 }}>
+                  Email
+                </Typography>
+              </Box>
+              <Box
+                sx={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "center",
+                  width: "60%",
+                }}
+              >
+                <TextField
+                  disabled={edit ? false : true}
+                  sx={{ marginTop: 1.5, width: "100%" }}
+                  defaultValue={profile.username}
+                ></TextField>
+                <TextField
+                  disabled={edit ? false : true}
+                  sx={{ marginTop: 1.5, width: "100%" }}
+                  defaultValue={profile.firstname}
+                ></TextField>
+                <TextField
+                  disabled={edit ? false : true}
+                  sx={{ marginTop: 1.5, width: "100%" }}
+                  defaultValue={profile.lastname}
+                ></TextField>
+                <TextField
+                  disabled={edit ? false : true}
+                  sx={{ marginTop: 1.5, width: "100%" }}
+                  defaultValue={profile.email}
+                ></TextField>
+              </Box>
+            </Box>
           </Box>
         </Box>
       </Paper>

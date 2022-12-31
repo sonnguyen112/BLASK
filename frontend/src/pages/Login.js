@@ -70,19 +70,21 @@ export default function Login(props) {
           const json = await response.json();
           const profile = {
             username: json.username,
-            firstname: json.firstname,
-            lastname: json.lastname,
+            firstname: json.first_name,
+            lastname: json.last_name,
             email: json.email,
-            avatar: json.avatar,
+            avatar: `http://localhost:8000${json.avatar}`,
           };
           props.setToken(json.token);
+          console.log(profile);
           props.setProfile(profile);
           if (remember) {
             window.localStorage.setItem("token", json.token);
-            window.localStorage.setItem("profile", profile);
+            window.localStorage.setItem("profile", JSON.stringify(profile));
+            window.localStorage.setItem("remember", "1");
           } else {
             window.sessionStorage.setItem("token", json.token);
-            window.sessionStorage.setItem("profile", profile);
+            window.sessionStorage.setItem("profile", JSON.stringify(profile));
           }
           setLoading(false);
           navigate("/");

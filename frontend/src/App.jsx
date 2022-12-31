@@ -19,8 +19,15 @@ function App() {
 
   const localToken = window.localStorage.getItem("token");
   const sessionToken = window.sessionStorage.getItem("token");
-  const localProfile = window.localStorage.getItem("profile");
-  const sessionProfile = window.sessionStorage.getItem("profile");
+  const remember = window.localStorage.getItem("remember");
+  const localProfile =
+    remember === "1"
+      ? JSON.parse(window.localStorage.getItem("profile"))
+      : null;
+  const sessionProfile =
+    remember !== "1"
+      ? JSON.parse(window.sessionStorage.getItem("profile"))
+      : null;
   const [token, setToken] = React.useState(
     localToken ? localToken : sessionToken ? sessionToken : ""
   );

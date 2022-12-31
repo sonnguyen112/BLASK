@@ -1,4 +1,4 @@
-function BLASKItem({ username, value, onClick, deleteQuiz, editQuiz }) {
+function BLASKItem({ username, value, avatar, onClick, deleteQuiz, editQuiz }) {
   return (
     <div width="1" className="blask-item">
       <div className="abc">
@@ -30,7 +30,7 @@ function BLASKItem({ username, value, onClick, deleteQuiz, editQuiz }) {
 
         <div className="blask-footer">
           <div className="blask-author">
-            <img src={value.avatar} alt="" className="blask-avatar" />
+            <img src={avatar} alt="" className="blask-avatar" />
             {username || "You"}
           </div>
           <div className="blask-edit-info">

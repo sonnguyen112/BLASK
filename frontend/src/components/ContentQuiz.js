@@ -39,7 +39,9 @@ const ContentQuiz = (props) => {
   };
 
   const [displayIndex, setDisplayIndex] = useState(0);
-  const [selectedImage, setSelectedImage] = useState(defaultImage);
+  const [selectedImage, setSelectedImage] = useState(
+    props.question[0].imageQuestionUrl
+  );
   const [name, setName] = useState(props.question[0].name);
   const [options, setOptions] = useState(props.question[0].options);
   const [time, setTime] = React.useState(props.question[0].time);
@@ -47,6 +49,8 @@ const ContentQuiz = (props) => {
 
   useEffect(() => {
     setOptions(props.question[displayIndex].options);
+    setSelectedImage(props.question[displayIndex].imageQuestionUrl);
+    console.log(selectedImage);
   }, [props]);
 
   const handleTime = (event) => {
@@ -339,15 +343,12 @@ const ContentQuiz = (props) => {
             hidden
             onChange={(event) => {
               if (event.target.files[0]) {
-                var reader = new FileReader();
-                reader.onloadend = function () {
-                  var img = reader.result;
-                  var newQuestion = [...props.question];
-                  newQuestion[displayIndex].imageQuestionUrl = img;
-                  setSelectedImage(img);
-                  props.setQuestion(newQuestion);
-                };
-                reader.readAsDataURL(event.target.files[0]);
+                const img = URL.createObjectURL(event.target.files[0]);
+                var newQuestion = [...props.question];
+                newQuestion[displayIndex].imageQuestionUrl = img;
+                setSelectedImage(img);
+                props.setQuestion(newQuestion);
+                console.log("img", img);
               }
             }}
             onClick={(event) => {
