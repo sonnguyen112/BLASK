@@ -68,6 +68,8 @@ const Play = () => {
     const handleChoose = (index) => {
 
     }
+     
+    ///                     THIS IS USED FOR TIME PROCESSING
     useEffect(() => {
         const interval = setInterval(() => setTimeShowQuestion(time_show_question - 1), 1000);
 
@@ -104,6 +106,8 @@ const Play = () => {
         console.log("type render change:", typeRender)
     }, [typeRender])
 
+    ///                     THIS IS END FOR TIME PROCESSING
+
     const handleNext = async () => {
         await setIndexQues(index_ques + 1);
         // setTimeShowQuestion(5);
@@ -120,7 +124,9 @@ const Play = () => {
         case 0:
             return (
                 <div className="container">
-                    {title}
+                    <div className="questionnaire">
+                        {title}
+                    </div>
                     <div class="loader-5 center"><span></span></div>
                 </div>
             )
