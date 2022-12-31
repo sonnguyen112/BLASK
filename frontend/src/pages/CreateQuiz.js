@@ -8,7 +8,7 @@ import {
 } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 
 import CreateBar from "../components/CreateBar";
 import ContentQuiz from "../components/ContentQuiz";
@@ -19,6 +19,8 @@ const CreateQuiz = (props) => {
   const [title, setTitle] = useState("");
   const [imgQuiz, setImgQuiz] = useState("");
   let navigate = useNavigate();
+  const location = useLocation();
+
   const defaultQuestion = {
     name: "Question",
     options: [
@@ -31,6 +33,7 @@ const CreateQuiz = (props) => {
     point: 50,
     time: 10,
   };
+  const [edit, setEdit] = useState(false);
   const [question, setQuestion] = useState([defaultQuestion]);
   const [open, setOpen] = useState(false);
   const [messageError, setMessageError] = useState({
@@ -39,14 +42,39 @@ const CreateQuiz = (props) => {
     quizName: "",
     quizCorrect: "",
   });
-
   useEffect(() => {
-    if (props.edit === true) {
-      setTitle(props.quiz.title);
-      setImgQuiz(props.quiz.imageQuizUrl);
-      setQuestion(props.quiz.questions);
+    if (location.state) {
+      setEdit(location.state.edit);
+      const list_ques = location.state.quiz.list_question;
+      const list_opts = location.state.quiz.list_option;
+      const ques = [];
+      if (list_ques.length !== 0) {
+        list_ques.map((q) => {
+          if (list_opts.length !== 0) {
+            const opt = list_opts.filter((o) => o.question === q.id);
+            var optionsTmp = [];
+            opt.map((o) => {
+              optionsTmp.push({ content: o.content, is_true: o.is_true });
+            });
+            while (optionsTmp.length < 4) {
+              optionsTmp.push({ content: "", is_true: false });
+            }
+            ques.push({
+              name: q.description,
+              imageQuestionUrl: q.image_question_url,
+              options: optionsTmp,
+              time: q.num_of_second,
+              point: q.score,
+            });
+          }
+        });
+      }
+      console.log("edit", ques);
+      setQuestion(ques);
+      setImgQuiz(location.state.quiz.imageQuizUrl);
+      setTitle(location.state.quiz.title);
     }
-  }, [props]);
+  }, [location]);
 
   const handleTitle = (value) => {
     setTitle(value);
@@ -125,6 +153,7 @@ const CreateQuiz = (props) => {
         body: JSON.stringify(quizCreate),
       }
     );
+    console.log(quizCreate);
     navigate("/library");
   }
 
@@ -134,6 +163,7 @@ const CreateQuiz = (props) => {
       <CreateBar
         setHeight={setHeight}
         height={height}
+        title={title}
         handleTitle={handleTitle}
         setImgQuiz={setImgQuiz}
         handleSave={handleSave}

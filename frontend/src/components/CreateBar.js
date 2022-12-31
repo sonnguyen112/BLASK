@@ -72,6 +72,7 @@ const ToolBar = (props) => {
               placeholder="Please enter title"
               required
               color="secondary"
+              value={props.title}
               onChange={(event) => {
                 props.handleTitle(event.target.value);
               }}

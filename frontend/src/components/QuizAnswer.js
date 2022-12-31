@@ -4,6 +4,7 @@ import React from "react";
 
 const QuizAnswer = (props) => {
   const color = ["#cc0000", "#2986cc", "#e69138", "#38761d"];
+  console.log("answer", props.id, props.options);
   return (
     <Paper
       sx={{

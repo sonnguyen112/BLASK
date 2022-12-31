@@ -42,8 +42,10 @@ const ContentQuiz = (props) => {
   const [selectedImage, setSelectedImage] = useState(defaultImage);
   const [name, setName] = useState(props.question[0].name);
   const [options, setOptions] = useState(props.question[0].options);
-  const [time, setTime] = React.useState(10);
-  const [point, setPoint] = React.useState(50);
+  const [time, setTime] = React.useState(props.question[0].time);
+  const [point, setPoint] = React.useState(props.question[0].point);
+  console.log("question", props.question);
+  console.log("options", props.question[0].options);
 
   const handleTime = (event) => {
     var newQuestion = [...props.question];
@@ -244,7 +246,11 @@ const ContentQuiz = (props) => {
             inputProps={{ maxLength: 75 }}
             required
             color="secondary"
-            value={name !== "Question" ? name : ""}
+            value={
+              props.question[displayIndex].name !== "Question"
+                ? props.question[displayIndex].name
+                : ""
+            }
             sx={{ width: { md: "65%", xs: "40%" } }}
             onChange={handleNameQues}
           />
@@ -369,13 +375,13 @@ const ContentQuiz = (props) => {
           >
             <QuizAnswer
               id={0}
-              options={options[0]}
+              options={props.question[displayIndex].options[0]}
               handleOptions={handleOptions}
               handleCorrectOptions={handleCorrectOptions}
             />
             <QuizAnswer
               id={1}
-              options={options[1]}
+              options={props.question[displayIndex].options[1]}
               handleOptions={handleOptions}
               handleCorrectOptions={handleCorrectOptions}
             />
@@ -392,13 +398,13 @@ const ContentQuiz = (props) => {
           >
             <QuizAnswer
               id={2}
-              options={options[2]}
+              options={props.question[displayIndex].options[2]}
               handleOptions={handleOptions}
               handleCorrectOptions={handleCorrectOptions}
             />
             <QuizAnswer
               id={3}
-              options={options[3]}
+              options={props.question[displayIndex].options[3]}
               handleOptions={handleOptions}
               handleCorrectOptions={handleCorrectOptions}
             />
