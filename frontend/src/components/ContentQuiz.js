@@ -44,8 +44,17 @@ const ContentQuiz = (props) => {
   const [options, setOptions] = useState(props.question[0].options);
   const [time, setTime] = React.useState(props.question[0].time);
   const [point, setPoint] = React.useState(props.question[0].point);
-  console.log("question", props.question);
-  console.log("options", props.question[0].options);
+
+  console.log("question 0", props.question[0]);
+  useEffect(() => {
+    while (props.question[displayIndex].options.length < 4) {
+      props.question[displayIndex].options.push({
+        content: "",
+        is_true: false,
+      });
+    }
+    setOptions(props.question[displayIndex].options);
+  }, [props]);
 
   const handleTime = (event) => {
     var newQuestion = [...props.question];
@@ -375,13 +384,13 @@ const ContentQuiz = (props) => {
           >
             <QuizAnswer
               id={0}
-              options={props.question[displayIndex].options[0]}
+              options={options[0]}
               handleOptions={handleOptions}
               handleCorrectOptions={handleCorrectOptions}
             />
             <QuizAnswer
               id={1}
-              options={props.question[displayIndex].options[1]}
+              options={options[1]}
               handleOptions={handleOptions}
               handleCorrectOptions={handleCorrectOptions}
             />
@@ -398,13 +407,13 @@ const ContentQuiz = (props) => {
           >
             <QuizAnswer
               id={2}
-              options={props.question[displayIndex].options[2]}
+              options={options[2]}
               handleOptions={handleOptions}
               handleCorrectOptions={handleCorrectOptions}
             />
             <QuizAnswer
               id={3}
-              options={props.question[displayIndex].options[3]}
+              options={options[3]}
               handleOptions={handleOptions}
               handleCorrectOptions={handleCorrectOptions}
             />

@@ -40,7 +40,9 @@ const Library = (props) => {
       );
       const editQuiz = await response.json();
       console.log(editQuiz);
-      navigate("/create-quiz", { state: { edit: 1, quiz: editQuiz } });
+      navigate("/create-quiz", {
+        state: { edit: 1, quiz: editQuiz, slug: quizs[index]["slug"] },
+      });
     }
     console.log("edit", index);
     fetchQuiz();

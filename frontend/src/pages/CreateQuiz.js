@@ -5,6 +5,8 @@ import {
   DialogTitle,
   DialogContent,
   DialogContentText,
+  CircularProgress,
+  Backdrop,
 } from "@mui/material";
 
 import React, { useEffect, useState } from "react";
@@ -16,6 +18,7 @@ import defaultImage from "../assets/images/Grey_thumb.png";
 
 const CreateQuiz = (props) => {
   const [height, setHeight] = useState(0);
+  const [loading, setLoading] = useState(false);
   const [title, setTitle] = useState("");
   const [imgQuiz, setImgQuiz] = useState("");
   let navigate = useNavigate();
@@ -45,6 +48,7 @@ const CreateQuiz = (props) => {
   useEffect(() => {
     if (location.state) {
       setEdit(location.state.edit);
+      console.log("111111111111111111111111111");
       const list_ques = location.state.quiz.list_question;
       const list_opts = location.state.quiz.list_option;
       const ques = [];
@@ -85,6 +89,8 @@ const CreateQuiz = (props) => {
   };
 
   const handleSave = () => {
+    setLoading(true);
+
     const quizCreate = {
       title: title,
       description: "No description",
@@ -137,9 +143,13 @@ const CreateQuiz = (props) => {
       setOpen(checkError);
       setMessageError(message);
     } else {
-      fetchCreateQuiz(quizCreate);
+      if (!edit) {
+        fetchCreateQuiz(quizCreate);
+      } else {
+      }
     }
   };
+
   async function fetchCreateQuiz(quizCreate) {
     const response = await fetch(
       "http://localhost:8000/quiz/api/create_quiz/",
@@ -154,6 +164,7 @@ const CreateQuiz = (props) => {
       }
     );
     console.log(quizCreate);
+    setLoading(false);
     navigate("/library");
   }
 
@@ -202,8 +213,10 @@ const CreateQuiz = (props) => {
           )}
         </DialogContent>
       </Dialog>
+
       <ContentQuiz
         height={height}
+        loading={loading}
         question={question}
         setQuestion={setQuestion}
       />
