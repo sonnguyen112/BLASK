@@ -28,25 +28,25 @@ class WaitConsumer(WebsocketConsumer):
         text_data_json = json.loads(text_data)
         name_player = text_data_json['name_player']
         avatar = text_data_json['avatar']
-        is_start = text_data_json['is_start']
+        type_action = text_data_json["type_action"]
 
         # Send message to room group
         async_to_sync(self.channel_layer.group_send)(
             self.room_group_name, {"type": "wait_message", "name_player": name_player, "avatar": avatar,
-                                   "is_start": is_start}
+                                   "type_action": type_action}
         )
 
     # Receive message from room group
     def wait_message(self, event):
         name_player = event["name_player"]
         avatar = event["avatar"]
-        is_start = event["is_start"]
+        type_action = event["type_action"]
 
         # Send message to WebSocket
         self.send(text_data=json.dumps({
             'name_player': name_player,
             'avatar': avatar,
-            "is_start" : is_start
+            "type_action" : type_action
         }))
 
 class PlayConsumer(WebsocketConsumer):

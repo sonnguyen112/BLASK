@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Sigmar+One&display=swap');
+
+html, body { 
+    margin:0; 
+    padding:0; 
+    height:100%; 
+}
+
+.joinin-background {
+    display: flex;
+    min-height: 100vh;
+    background: linear-gradient(#aac0f0, #d2f0e6);
+    color: #fefefe;
+    justify-content: center;
+    font-size: 100px;
+    font-family: 'Sigmar One', cursive;
+}
+
+.blur {
+    position: absolute;
+    background-color: black;
+    opacity: 30%;
+    inset: 0;
+    z-index: 0;
+}
+
+.joinin-form {
+    position: relative;
+    display: block;
+    max-width: fit-content;
+    height: fit-content;
+    margin-top: 10rem;
+    width: 100%;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+    padding: 16px;
+    z-index: 10;
+}
+
+.joinin-logo-blask {
+    width: max-content;
+    height: fit-content;
+}
+
+.joinin-realform {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    padding: 32px;
+    background-color: #fefefe;
+    border-radius: 4px;
+}
+
+.joinin-fakeform {
+    display: flex;
+    flex-direction: column;
+    height: fit-content;
+    padding: 32px;
+    background-color: #fefefe;
+    border-radius: 4px;
+}
+
+
+
+.joinin-fakeform input, .joinin-realform input {
+    width: 100%;
+    text-align: center;
+    min-height: 2.375rem;
+    max-height: 48px;
+    line-height: 2.375rem;
+    text-align: center;
+    min-width: 6.25rem;
+    color: rgb(51, 51, 51);
+    outline: none;
+    margin-bottom: 0.625rem;
+    font-size: 1rem;
+    font-weight: bold;
+    font-family: Montserrat, "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.square {
+    position: fixed;
+    background-color: rgb(0, 0, 0);
+    transform: rotate(45deg);
+    opacity: 0.1;
+    top: -15vmin;
+    left: -15vmin;
+    min-width: 90vmin;
+    min-height: 90vmin;
+    animation: rotate 15s infinite;
+}
+
+@keyframes rotate {
+    0%{ transform: rotate(45deg);} /*Text is hidden*/
+	80%{ transform: rotate(90deg);} /*Text stays visible*/
+	100%{ transform: rotate(45deg);} /*Text stays hidden*/
+}
+.circle {
+    position: fixed;
+    border-radius: 50%;
+    background-color: rgb(0, 0, 0);
+    opacity: 0.1;
+    min-width: 75vmin;
+    min-height: 75vmin;
+    bottom: -15vmin;
+    right: -15vmin;
+    animation: zoom 15s infinite;
+}
+
+@keyframes zoom {
+    0%{ min-width: 75vmin;
+        min-height: 75vmin;} /*Text is hidden*/
+	80%{ min-width: 90vmin;
+        min-height: 90vmin;} /*Text stays visible*/
+	100%{ min-width: 75vmin;
+        min-height: 75vmin;} /*Text stays hidden*/
+}
+
+.joinin-fakeform button, .joinin-realform button {
+    width: 100%;
+    margin: 0px;
+    border: 0px;
+    cursor: pointer;
+    display: inline-block;
+    vertical-align: bottom;
+    box-shadow: rgb(0 0 0 / 25%) 0px -4px inset;
+    background: rgb(51, 51, 51);
+    color: rgb(255, 255, 255);
+    border-radius: 4px;
+    font-size: 0.875rem;
+    font-weight: 700;
+    text-align: center;
+    text-decoration: none;
+    min-width: 48px;
+    min-height: 48px;
+    padding: 0px 16px 4px;
+    position: relative;
+    font-family: Montserrat, "Noto Sans Arabic", "Helvetica Neue", Helvetica, Arial, sans-serif;
+    transition: 0.1s;
+}
+
+button:hover {
+    transform: translate(0px, 2px);
+    box-shadow: none;
+}
