@@ -40,6 +40,8 @@ MEDIA_URL = '/media/'
 # Application definition
 
 INSTALLED_APPS = [
+    "daphne",
+    "corsheaders",
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -50,9 +52,11 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     "BLASK_auth",
     "quiz",
+    "room",
 ]
 
 MIDDLEWARE = [
+    "corsheaders.middleware.CorsMiddleware",
     "django.middleware.security.SecurityMiddleware",
     "django.contrib.sessions.middleware.SessionMiddleware",
     "django.middleware.common.CommonMiddleware",
@@ -81,7 +85,15 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "BLASK_server.wsgi.application"
-
+ASGI_APPLICATION = "BLASK_server.asgi.application"
+CHANNEL_LAYERS = {
+    "default": {
+        "BACKEND": "channels_redis.core.RedisChannelLayer",
+        "CONFIG": {
+            "hosts": [("127.0.0.1", 6379)],
+        },
+    },
+}
 
 # Database
 # https://docs.djangoproject.com/en/4.1/ref/settings/#databases
@@ -144,3 +156,12 @@ REST_FRAMEWORK = {
     ]
 }
 
+# Actual directory user files go to
+MEDIA_ROOT = os.path.join(os.path.dirname(BASE_DIR), 'BLASK/mediafiles')
+
+# URL used to access the media
+MEDIA_URL = '/media/'
+
+CORS_ALLOWED_ORIGINS = [
+    "http://localhost:3000",
+]

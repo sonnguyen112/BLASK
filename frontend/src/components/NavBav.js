@@ -21,7 +21,7 @@ import AnalyticsIcon from '@mui/icons-material/Analytics';
 import SportsEsportsIcon from '@mui/icons-material/SportsEsports';
 import { red } from '@mui/material/colors';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-
+import { useNavigate } from "react-router-dom";
 import { Link } from 'react-router-dom';
 import '../style/navbav.css'
 
@@ -30,10 +30,9 @@ import '../style/navbav.css'
 const pages = ['Home', 'Library', 'Reports', 'Minigame'];
 const settings = ['Profile', 'Sign out'];
 
-function ResponsiveAppBar() {
+function ResponsiveAppBar(props) {
 
-    const [login, SetLogin] = React.useState(false);
-
+    let navigate = useNavigate();
     const theme = createTheme({
             palette: {
             mode: 'light',
@@ -44,7 +43,7 @@ function ResponsiveAppBar() {
     const [anchorElUser, setAnchorElUser] = React.useState(null);
 
     const handleLogin = () => {
-        SetLogin(true);
+        
     }
 
     const handleOpenNavMenu = (event) => {
@@ -58,14 +57,11 @@ function ResponsiveAppBar() {
         
         switch(settings.indexOf(event.target.innerText))
         {
-            case 3:
-                SetLogin(false);
-                break;
             case 0:
                 break;
             case 1:
-                break;
-            case 2:
+                props.setToken("");
+                navigate('/')
                 break;
             default:
                 break;
@@ -86,7 +82,7 @@ function ResponsiveAppBar() {
     return (
         <ThemeProvider theme={theme}>
         <AppBar position="static">
-        <Container maxWidth="xl" color="primary light">
+        <Container maxWidth="xl" color="primary light" >
             <Toolbar id="back-to-top-anchor" disableGutters>
             <AdbIcon sx={{ display: { xs: 'none', md: 'flex' }, mr: 1 }} />
             
@@ -155,7 +151,6 @@ function ResponsiveAppBar() {
 
                 </Menu>
             </Box>
-            <AdbIcon sx={{ display: { xs: 'flex', md: 'none' }, mr: 1 }} />
             <Typography
                 variant="h5"
                 noWrap
@@ -176,7 +171,7 @@ function ResponsiveAppBar() {
             <Box sx={{ flexGrow: 1, display: { xs: 'none', md: 'flex' } }}>
                 <Button 
                     className='underline-button'
-                    component={Link} to='/'
+                    component={Link} to='/home'
                     key={pages[0]}
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: 'white', display: 'flex' }}
@@ -187,7 +182,7 @@ function ResponsiveAppBar() {
                 <Button 
                     className='underline-button'
                     key={pages[1]}
-                    component={Link} to='library'
+                    component={Link} to='/library'
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: 'white', display: 'flex' }}
                 >
@@ -196,7 +191,7 @@ function ResponsiveAppBar() {
                 </Button>
                 <Button 
                     className='underline-button'
-                    component={Link} to='reports'
+                    component={Link} to='/reports'
                     key={pages[2]}
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: 'white', display: 'flex' }}
@@ -206,7 +201,7 @@ function ResponsiveAppBar() {
                 </Button>
                 <Button
                     className='underline-button'
-                    component={Link} to='minigame'
+                    component={Link} to='/minigame'
                     key={pages[3]}
                     onClick={handleCloseNavMenu}
                     sx={{ my: 2, color: 'white', display: 'flex' }}
@@ -217,12 +212,20 @@ function ResponsiveAppBar() {
             </Box>
 
 
-            {login ? (<><Button color='secondary' variant='contained' sx={{ my: 2, display: 'flex' , mr:1}}>Create</Button>
+            {props.token.trim() !== "" ? (<>
+            <Button 
+            component={Link}
+            to = '/create-quiz'
+            color='secondary' 
+            variant='contained'
+            sx={{ my: 2, display: 'flex'}}>Create</Button>
+            <Button component={Link} to='*' variant="contained" sx={{m: 1, backgroundColor:"#e3f2fd", color:"#000"}}>Play</Button>
+
             <Box sx={{ flexGrow: 0 }}>
                 
                 <Tooltip title="Open settings">
                 <IconButton onClick={handleOpenUserMenu} sx={{ p: 0 }}>
-                    <Avatar alt="Remy Sharp" src="/static/images/avatar/2.jpg" />
+                    <Avatar alt="Remy Sharp" src="/images/image_home.png" />
                 </IconButton>
                 </Tooltip>
                 <Menu
@@ -256,7 +259,7 @@ function ResponsiveAppBar() {
                 </Menu>
             </Box></>)
             : <Box sx={{ flexGrow: 0 }}>
-                <Button component={Link} to='signup' variant="contained" color="success" sx={{m: 1}}>Sign Up</Button>
+                <Button component={Link} to='*' variant="contained" sx={{m: 1, backgroundColor:"#e3f2fd", color:"#000"}}>Play</Button>
                 <Button component={Link} to='login' variant="text" color="inherit" onClick={handleLogin}>Log In</Button>
             </Box>}
             </Toolbar>

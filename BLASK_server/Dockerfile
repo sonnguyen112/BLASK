@@ -1,11 +1,17 @@
-FROM python:3.9.7
+FROM python:3.9.5
 
 WORKDIR /home/BLASK/
 
+RUN apt update && apt install -y redis-server
+
 COPY requirements.txt .
+
+RUN /usr/local/bin/python -m pip install --upgrade pip
 
 RUN pip install --no-cache-dir -r requirements.txt
 
 COPY . .
 
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+RUN chmod +x run_server.sh
+
+CMD ["bash","run_server.sh"]

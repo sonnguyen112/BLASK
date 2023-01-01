@@ -6,11 +6,11 @@ import Introduction from '../components/Introduction';
 import Footer from '../components/Footer';
 
 
-function Home() {
+function Home(props) {
   return (
     <Container maxWidth='false' disableGutters>
       <Introduction/>
-      <Instruction/>
+      <Instruction token={props.token}/>
       <Footer/>
     </Container>
     );
