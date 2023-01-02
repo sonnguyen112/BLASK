@@ -16,7 +16,7 @@ services:
     ports:
       - 8000:8000
     volumes:
-       - media:/media/
+       - media:/mediafiles/
     # volumes:
     #   - ./BLASK_server/:/home/BLASK/:ro
     # command: python manage.py runserver 0.0.0.0:8000
