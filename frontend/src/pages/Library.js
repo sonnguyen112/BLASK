@@ -1,39 +1,106 @@
-import BLASKItem from "../components/BlaskItem"
-import "../App.css"
+import BLASKItem from "../components/BlaskItem";
+import { useNavigate } from "react-router-dom";
+import { useState, useEffect } from "react";
+import "../App.css";
 
-const Library = () => {
-    return (
-      <div className="blask-list">
-        <BLASKItem 
-          image="https://bluemetropolis.org/wp-content/uploads/2020/10/quiz.jpg"
-          avatar="https://images.vexels.com/media/users/3/154255/isolated/preview/9afaf910583333c167e40ee094e12cfa-cat-animal-avatar.png"
-          title="Quiz for Bảo"
-          author="Hà Thiên Lộc"
-          edit_time="Updated 8 months ago">
-        </BLASKItem>
-        <BLASKItem 
-          image="https://bluemetropolis.org/wp-content/uploads/2020/10/quiz.jpg"
-          avatar="https://images.vexels.com/media/users/3/154255/isolated/preview/9afaf910583333c167e40ee094e12cfa-cat-animal-avatar.png"
-          title="Quiz for Bảo"
-          author="Hà Thiên Lộc"
-          edit_time="Updated 8 months ago">
-        </BLASKItem>
-        <BLASKItem 
-          image="https://bluemetropolis.org/wp-content/uploads/2020/10/quiz.jpg"
-          avatar="https://images.vexels.com/media/users/3/154255/isolated/preview/9afaf910583333c167e40ee094e12cfa-cat-animal-avatar.png"
-          title="Quiz for Bảo"
-          author="Hà Thiên Lộc"
-          edit_time="Updated 8 months ago">
+const Library = (props) => {
+  let navigate = useNavigate();
+  const [quizs, setQuizs] = useState(Array(0).fill(null));
+  useEffect(() => {
+    async function GetData(url = "") {
+      const response = await fetch(url, {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "token " + props.token,
+        },
+      });
+      // Default options are marked with *
 
-        </BLASKItem>
-        <BLASKItem 
-          image="https://bluemetropolis.org/wp-content/uploads/2020/10/quiz.jpg"
-          avatar="https://images.vexels.com/media/users/3/154255/isolated/preview/9afaf910583333c167e40ee094e12cfa-cat-animal-avatar.png"
-          title="Quiz for Bảo"
-          author="Hà Thiên Lộc"
-          edit_time="Updated 8 months ago">
-        </BLASKItem>
-      </div>
-    )
-}
-  export default Library;
+      let data = await response.json(); // parses JSON response into native JavaScript objects
+      console.log(data);
+      setQuizs(data["quiz_list"]);
+    }
+    GetData("http://localhost:8000/quiz/api/get_all_quiz");
+  }, []);
+
+  const handleEditQuiz = (index) => {
+    async function fetchQuiz() {
+      const response = await fetch(
+        "http://localhost:8000/quiz/api/get_one_quiz/" + quizs[index]["slug"],
+        {
+          mode: "cors",
+          method: "GET",
+          headers: [
+            ["Content-Type", "application/json"],
+            ["Authorization", "token " + props.token],
+          ],
+        }
+      );
+      const editQuiz = await response.json();
+      console.log(editQuiz);
+      navigate("/create-quiz", {
+        state: { edit: 1, quiz: editQuiz, slug: quizs[index]["slug"] },
+      });
+    }
+    console.log("edit", index);
+    fetchQuiz();
+  };
+  const handleDeleteQuiz = (index) => {
+    console.log("delete", index);
+  };
+
+  async function handleCreateRoom(index) {
+    // const response = await fetch('http://localhost:8000/room/api/get_quiz/' , {
+    //   method: 'GET', // *GET, POST, PUT, DELETE, etc.
+    //   mode: 'cors', // no-cors, *cors, same-origin
+    //   headers: {
+    //     'Content-Type': 'application/json',
+    //     'Authorization': 'token ' + props.token
+    //   },
+    // });
+    const response2 = await fetch(
+      "http://localhost:8000/room/api/create_room/" + quizs[index]["slug"],
+      {
+        method: "GET", // *GET, POST, PUT, DELETE, etc.
+        mode: "cors", // no-cors, *cors, same-origin
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "token " + props.token,
+        },
+      }
+    );
+    // let data = await response.json()
+    let data2 = await response2.json();
+    navigate("/room", {
+      state: {
+        // question_info: data,
+        quiz_info: data2,
+        /*
+        pin:
+        token_host:
+        title:
+        description:
+        list_question:
+        list_option:
+      */
+        my_token: props.token,
+      },
+    });
+  }
+  return (
+    <div className="blask-list">
+      {quizs.map((item, index) => (
+        <BLASKItem
+          username={props.profile["username"]}
+          value={item}
+          deleteQuiz={() => handleDeleteQuiz(index)}
+          editQuiz={() => handleEditQuiz(index)}
+          onClick={() => handleCreateRoom(index)}
+        ></BLASKItem>
+      ))}
+    </div>
+  );
+};
+export default Library;
