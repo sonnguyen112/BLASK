@@ -9,6 +9,8 @@ from project_utils.common import decode_base64
 from .dtos import *
 from BLASK_auth.models import UserProfile
 from django.contrib.auth.models import User
+from rest_framework.parsers import MultiPartParser
+from rest_framework.decorators import parser_classes
 
 # QUIZ############################################################################################################################################################################################################################################
 
@@ -257,6 +259,7 @@ def delete_all_quiz(request):
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
+@parser_classes([MultiPartParser])
 def update_profile(request):
     user = request.user
     user_profile = UserProfile.objects.get(user = user)
