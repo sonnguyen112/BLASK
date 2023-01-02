@@ -4,7 +4,7 @@ import "../style/timer.css"
 const Timer = ({value, setTimeInt, timeout}) => {
     useEffect(() => {
         const interval = setInterval(() => setTimeInt(value - 1), 1000);
-
+        console.log(value)
         if (value === -1) {
             timeout();
             clearInterval(interval);
