@@ -17,6 +17,10 @@ function App() {
     avatar: "",
   };
 
+  const [loginInfo, setLoginInfo] = React.useState({
+    username: "",
+    password: "",
+  });
   const localToken = window.localStorage.getItem("token");
   const sessionToken = window.sessionStorage.getItem("token");
   const remember = window.localStorage.getItem("remember");
@@ -42,6 +46,8 @@ function App() {
           path="*"
           element={
             <NavPages
+              loginInfo={loginInfo}
+              setLoginInfo={setLoginInfo}
               token={token}
               setToken={setToken}
               profile={profile}

@@ -76,7 +76,6 @@ export default function Login(props) {
             avatar: `http://localhost:8000${json.avatar}`,
           };
           props.setToken(json.token);
-          console.log(profile);
           props.setProfile(profile);
           if (remember) {
             window.localStorage.setItem("token", json.token);
@@ -86,6 +85,7 @@ export default function Login(props) {
             window.sessionStorage.setItem("token", json.token);
             window.sessionStorage.setItem("profile", JSON.stringify(profile));
           }
+          props.setLoginInfo(signInData);
           setLoading(false);
           navigate("/");
         } else {

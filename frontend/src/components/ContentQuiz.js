@@ -50,8 +50,8 @@ const ContentQuiz = (props) => {
   useEffect(() => {
     setOptions(props.question[displayIndex].options);
     setSelectedImage(props.question[displayIndex].imageQuestionUrl);
-    console.log(selectedImage);
-  }, [props]);
+    setName(props.question[displayIndex].name);
+  }, [props, displayIndex]);
 
   const handleTime = (event) => {
     var newQuestion = [...props.question];
@@ -252,11 +252,7 @@ const ContentQuiz = (props) => {
             inputProps={{ maxLength: 75 }}
             required
             color="secondary"
-            value={
-              props.question[displayIndex].name !== "Question"
-                ? props.question[displayIndex].name
-                : ""
-            }
+            value={name !== "Question" ? name : ""}
             sx={{ width: { md: "65%", xs: "40%" } }}
             onChange={handleNameQues}
           />
