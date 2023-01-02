@@ -9,8 +9,6 @@ from project_utils.common import decode_base64
 from .dtos import *
 from BLASK_auth.models import UserProfile
 from django.contrib.auth.models import User
-from rest_framework.parsers import MultiPartParser, FormParser
-from rest_framework.decorators import parser_classes
 
 # QUIZ############################################################################################################################################################################################################################################
 
@@ -259,24 +257,23 @@ def delete_all_quiz(request):
 
 @api_view(["PATCH"])
 @permission_classes([IsAuthenticated])
-@parser_classes([MultiPartParser])
-@parser_classes([FormParser])
 def update_profile(request):
-    user = request.user
-    user_profile = UserProfile.objects.get(user = user)
-    username = request.data.get('username')
-    email = request.data.get('email')
-    first_name = request.data.get('first_name')
-    last_name = request.data.get('last_name')
-    user.username = username
-    user.email = email
-    user.save()
-    user_profile.first_name = first_name
-    user_profile.last_name = last_name
     try:
+        user = request.user
+        user_profile = UserProfile.objects.get(user = user)
+        username = request.data.get('username')
+        email = request.data.get('email')
+        first_name = request.data.get('first_name')
+        last_name = request.data.get('last_name')
+        user.username = username
+        user.email = email
+        user.save()
+        user_profile.first_name = first_name
+        user_profile.last_name = last_name
         if request.data.get('upload'):
-            file = request.data.get('upload')
-            user_profile.profile_pic = file
+            base64_img = request.data.get('upload')
+            quiz_img_url = decode_base64(base64_img, "profile_pics")
+            user_profile.profile_pic = quiz_img_url
             user_profile.save()
         return Response(
             {
