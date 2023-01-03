@@ -168,5 +168,5 @@ CORS_ALLOWED_ORIGINS = [
     "https://67fd-113-172-80-141.ap.ngrok.io",
     "http://27.74.18.72",
     "http://blaskweb.ddns.net:3000",
-    "https://blaskweb.ddns.net:3000"
+    "blaskweb.ddns.net"
 ]
