@@ -2,7 +2,7 @@ version: '3'
 services:
   frontend:
     build: ./frontend
-    # image: khoirobert/blask_frontend
+    image: khoirobert/blask_frontend
     depends_on:
       - api
     ports:
@@ -11,7 +11,7 @@ services:
     #   - ./frontend:/home/BLASK_FE/:ro
   api:
     build: ./BLASK_server
-    # image: khoirobert/blask
+    image: khoirobert/blask
     depends_on:
       - postgres
       - redis
@@ -34,14 +34,14 @@ services:
       - ALGORITHM=HS256
       - ACCESS_TOKEN_EXPIRE_MINUTES=30
   postgres:
-    image: postgres:alpine
+    image: postgres
     environment:
       - POSTGRES_PASSWORD=Son[1122002]
       - POSTGRES_DB=BLASK_DB
     volumes:
       - postgres-db:/var/lib/postgresql/data
   redis:
-    image: redis:alpine
+    image: redis:5
 
 volumes:
   postgres-db:

@@ -122,6 +122,17 @@ class PlayConsumer(WebsocketConsumer):
                     "avatar" : avatar
                     }
             )
+        elif type_action == "timeout":
+            name_player = text_data_json['name_player']
+            # Send message to room group
+            async_to_sync(self.channel_layer.group_send)(
+                self.room_group_name, {
+                    "type": "play_message",
+                    "type_action": type_action,
+                    "name_player": name_player,
+                    }
+            )
+
 
     # Receive message from room group
     def play_message(self, event):
@@ -164,4 +175,10 @@ class PlayConsumer(WebsocketConsumer):
                 "type_action": type_action,
                 "name_player": name_player,
                 "avatar": avatar
+            }))
+        elif type_action == "timeout":
+            name_player = event["name_player"]
+            self.send(text_data=json.dumps({
+                "type_action": type_action,
+                "name_player": name_player,
             }))
