@@ -28,13 +28,7 @@ def create_quiz(request):
             quiz_img_url = f"http://localhost:8000/media/default.jpg"
 
         dataQuiz = {
-            'title': data['title'],
-            'description': data['description'],
-            'userOf': request.user.id,
-            'imageQuizUrl': quiz_img_url,
-            'slug' : data['title'].replace(" ", "-") + str(uuid.uuid4())
-        }
-
+            'title': data['title'], 'description': data['description'], 'userOf': request.user.id}
         serializerQuiz = QuizSerializer(data=dataQuiz)
         if serializerQuiz.is_valid():
             serializerQuiz.save()
@@ -135,6 +129,12 @@ def get_one_quiz(request, slug):
 @permission_classes([IsAuthenticated])
 def update_quiz(request, slug):
     try:
+        if not id:
+            return Response({
+                "message": "can not find the id"
+            },
+                status=status.HTTP_404_NOT_FOUND
+            )
         data = request.data
 
         if "imageQuizUrl" in data:

@@ -164,5 +164,6 @@ MEDIA_URL = '/media/'
 
 CORS_ALLOWED_ORIGINS = [
     "http://localhost:3001",
-    "http://localhost:3000"
+    "http://localhost:3000",
+    "https://67fd-113-172-80-141.ap.ngrok.io"
 ]
