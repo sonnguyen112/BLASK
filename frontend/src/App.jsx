@@ -62,6 +62,7 @@ function App() {
         />
         <Route path="room" element={<Room />} />
         <Route path="joinin" element={<JoinIn />} />
+        <Route path="play" element={<Play />} />
         <Route path="ld" element={<LearderBoard />} />
       </Routes>
     </BrowserRouter>
