@@ -6,7 +6,7 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import Seat from "./Seat";
 import "../style/waitingroom.css";
 
-const memberHandler = (message, quiz_info, token_me, token_host, navigate, client, member, setMember) => {
+const memberHandler = (message, pin, quiz_info, token_me, token_host, navigate, client, member, setMember, setTimeNavigate) => {
 	console.log("1", message);
 	let tmp_message = JSON.parse(message.data);
 
@@ -34,10 +34,22 @@ const memberHandler = (message, quiz_info, token_me, token_host, navigate, clien
 	const onPlay = async () => {
 		client.close();
 
-		navigate('/play', {state: {
-			quiz_info: quiz_info,
-			name_player: token_me
-		}});
+		if(token_host !== token_me) {
+			setTimeout(function(){ navigate('/play', {state: {
+				quiz_info: quiz_info,
+				name_player: token_me,
+				token_host: token_host,
+				pin: pin,
+			}}); }, 2000);
+		}
+		else {
+			navigate('/play', {state: {
+				quiz_info: quiz_info,
+				name_player: token_me,
+				token_host: token_host,
+				pin: pin,
+			}});
+		}
 	}
 	switch (tmp_message.type_action) {
 		case "append":
@@ -112,7 +124,7 @@ const WaitingRoom = (props) => {
 				client.send(s);
 			}
 		};
-		client.onmessage = (message) => { memberHandler(message, props.quiz_info, props.token_me, props.token_host, navigate, client, memberRef.current, setMember) };
+		client.onmessage = (message) => { memberHandler(message, props.PIN, props.quiz_info, props.token_me, props.token_host, navigate, client, memberRef.current, setMember) };
 
 		return () => {
 			console.log("BAO PRO")

@@ -3,19 +3,18 @@ import "../style/timer.css"
 
 const Timer = ({value, setTimeInt, timeout}) => {
     useEffect(() => {
-        const interval = setInterval(() => setTimeInt(value - 1), 1000);
-
+        const interval = setTimeout(() => setTimeInt(value - 1), 1000);
         if (value === -1) {
             timeout();
-            clearInterval(interval);
+            clearTimeout(interval);
         }
 
-        return () => clearInterval(interval);
+        return () => clearTimeout(interval);
     }, [value]);
     return (
         <div class="base-timer">
             <span class="base-timer__label">
-                { value }
+                { value !== -1 ? value : "--"}
             </span>
         </div>
     );

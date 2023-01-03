@@ -2,7 +2,7 @@ FROM python:3.9.5
 
 WORKDIR /home/BLASK/
 
-RUN apt update && apt install -y redis-server
+RUN apt-get update && apt-get install -y redis-server
 
 COPY requirements.txt .
 
