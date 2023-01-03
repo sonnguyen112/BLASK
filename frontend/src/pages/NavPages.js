@@ -17,7 +17,7 @@ import Minigame from "./Minigame";
 
 const NavPages = (props) => {
   const [height, setHeight] = React.useState(0);
-
+  console.log("avatar", props.profile.avatar);
   return (
     <>
       <CssBaseline />
@@ -41,7 +41,6 @@ const NavPages = (props) => {
               <Library profile={props.profile} token={props.token} />
             ) : (
               <Login
-                setLoginInfo={props.setLoginInfo}
                 setToken={props.setToken}
                 setProfile={props.setProfile}
                 height={height}
@@ -49,27 +48,12 @@ const NavPages = (props) => {
             )
           }
         />
-        <Route
-          path="reports"
-          element={
-            props.token.trim() !== "" ? (
-              <Reports token={props.token} />
-            ) : (
-              <Login
-                setLoginInfo={props.setLoginInfo}
-                setToken={props.setToken}
-                setProfile={props.setProfile}
-                height={height}
-              />
-            )
-          }
-        />
+
         <Route path="signup" element={<Signup height={height} />} />
         <Route
           path="login"
           element={
             <Login
-              setLoginInfo={props.setLoginInfo}
               setToken={props.setToken}
               setProfile={props.setProfile}
               height={height}
@@ -83,7 +67,7 @@ const NavPages = (props) => {
               <Profile
                 profile={props.profile}
                 height={height}
-                loginInfo={props.loginInfo}
+                token={props.token}
                 setToken={props.setToken}
                 setProfile={props.setProfile}
               />

@@ -27,7 +27,7 @@ import { useNavigate } from "react-router-dom";
 import { Link } from "react-router-dom";
 import "../style/navbav.css";
 
-const pages = ["Home", "Library", "Reports", "Minigame"];
+const pages = ["Home", "Library", "Minigame"];
 const settings = ["Profile", "Sign out"];
 
 function ResponsiveAppBar(props) {
@@ -169,21 +169,12 @@ function ResponsiveAppBar(props) {
                 </MenuItem>
                 <MenuItem
                   component={Link}
-                  to="reports"
+                  to="minigame"
                   key={pages[2]}
                   onClick={handleCloseNavMenu}
                 >
                   <AnalyticsIcon sx={{ mr: 1, fontSize: "medium" }} />
                   <Typography textAlign="center">{pages[2]}</Typography>
-                </MenuItem>
-                <MenuItem
-                  component={Link}
-                  to="minigame"
-                  key={pages[3]}
-                  onClick={handleCloseNavMenu}
-                >
-                  <SportsEsportsIcon sx={{ mr: 1, fontSize: "medium" }} />
-                  <Typography textAlign="center">{pages[3]}</Typography>
                 </MenuItem>
               </Menu>
             </Box>
@@ -243,7 +234,7 @@ function ResponsiveAppBar(props) {
               <Button
                 className="underline-button"
                 component={Link}
-                to="/reports"
+                to="/minigame"
                 key={pages[2]}
                 onClick={handleCloseNavMenu}
                 sx={{ my: 2, color: "white", display: "flex" }}
@@ -256,23 +247,6 @@ function ResponsiveAppBar(props) {
                   }}
                 />
                 {pages[2]}
-              </Button>
-              <Button
-                className="underline-button"
-                component={Link}
-                to="/minigame"
-                key={pages[3]}
-                onClick={handleCloseNavMenu}
-                sx={{ my: 2, color: "white", display: "flex" }}
-              >
-                <SportsEsportsIcon
-                  sx={{
-                    display: { xs: "none", md: "flex" },
-                    mr: 1,
-                    fontSize: "medium",
-                  }}
-                />
-                {pages[3]}
               </Button>
             </Box>
 
