@@ -15,6 +15,7 @@ import LinearProgress from "@mui/material/LinearProgress";
 import LoginIcon from "@mui/icons-material/Login";
 import Typography from "@mui/material/Typography";
 import Container from "@mui/material/Container";
+
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 
 function Copyright(props) {
@@ -73,7 +74,7 @@ export default function Login(props) {
             firstname: json.first_name,
             lastname: json.last_name,
             email: json.email,
-            avatar: `http://localhost:8000${json.avatar}`,
+            avatar: json.avatar,
           };
           props.setToken(json.token);
           props.setProfile(profile);
@@ -85,7 +86,7 @@ export default function Login(props) {
             window.sessionStorage.setItem("token", json.token);
             window.sessionStorage.setItem("profile", JSON.stringify(profile));
           }
-          props.setLoginInfo(signInData);
+          window.localStorage.setItem("loginInfo", JSON.stringify(signInData));
           setLoading(false);
           navigate("/");
         } else {
@@ -224,6 +225,7 @@ export default function Login(props) {
               >
                 Sign In
               </Button>
+
               {errorMessage && (
                 <Alert
                   severity="error"

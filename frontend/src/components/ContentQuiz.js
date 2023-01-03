@@ -309,6 +309,8 @@ const ContentQuiz = (props) => {
             backgroundImage: `url(${selectedImage})`,
             backgroundRepeat: "no-repeat",
             borderRadius: "15px",
+            border: 2,
+            borderColor: "secondary",
             backgroundSize: "cover",
             "&:hover": { cursor: "pointer" },
             "&:hover .new-icon": {
