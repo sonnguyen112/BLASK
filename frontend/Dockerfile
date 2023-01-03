@@ -1,4 +1,4 @@
-FROM node:lastest
+FROM node:14.19.1
 
 WORKDIR /home/BLASK_FE/
 
