@@ -6,6 +6,7 @@ const QuizAnswer = (props) => {
   const color = ["#cc0000", "#2986cc", "#e69138", "#38761d"];
   return (
     <Paper
+      elevation={5}
       sx={{
         width: "40%",
         height: "100%",
@@ -23,7 +24,7 @@ const QuizAnswer = (props) => {
         disableUnderline
         multiline
         inputProps={{ maxLength: 100 }}
-        placeholder="Add answer 1"
+        placeholder={`Add answer ${props.id + 1}`}
         sx={{
           color: props.options.content.trim() !== "" ? "#fff" : "#000",
           width: "85%",

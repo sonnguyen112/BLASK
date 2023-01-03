@@ -1,4 +1,5 @@
 import {
+  Alert,
   Box,
   Button,
   Paper,
@@ -19,11 +20,11 @@ const Profile = (props) => {
   const [edit, setEdit] = useState(false);
   const [selectedImage, setSelectedImage] = useState(props.profile.avatar);
   const [profile, setProfile] = useState(props.profile);
+  const [success, setSuccess] = useState(false);
   const [open, setOpen] = useState(false);
 
   const pattern_email = /(\S+@\w+\.\w+)/;
   const pattern_special_character = /(\d)/;
-
   const [errorMessage, setErrorMessage] = React.useState({
     name: "",
     username: "",
@@ -88,9 +89,12 @@ const Profile = (props) => {
 
     setErrorMessage(message);
     setOpen(message.check);
-
+    console.log("before", props.token);
     if (!message.check) {
       fetchEditProfile();
+      setTimeout(function () {
+        setSuccess(false);
+      }, 5000);
     } else {
       setLoading(false);
     }
@@ -108,30 +112,31 @@ const Profile = (props) => {
           };
         });
       };
-      let formData = new FormData();
-      // let avatar;
-      // const copyAvatar = await getImageToBase64(selectedImage);
-      // if (copyAvatar.trim() !== "") {
-      //   avatar = copyAvatar.substring(copyAvatar.search("base64,") + 7);
-      // }
-      formData.append("username", profile.username);
-      formData.append("first_name", profile.firstname);
-      formData.append("last_name", profile.lastname);
-      formData.append("email", profile.email);
-      formData.append("upload", selectedImage);
+      let avatar;
+      const copyAvatar = await getImageToBase64(selectedImage);
+      if (copyAvatar.trim() !== "") {
+        avatar = copyAvatar.substring(copyAvatar.search("base64,") + 7);
+      }
+      const updateProfile = {
+        username: profile.username,
+        first_name: profile.firstname,
+        last_name: profile.lastname,
+        email: profile.email,
+        upload: avatar,
+      };
+      console.log("avatar", avatar);
       const response = await fetch(
         "http://localhost:8000/quiz/api/update_profile/",
         {
           mode: "cors",
           method: "PATCH",
           headers: [
-            ["Content-Type", "multipart/form-data"],
+            ["Content-Type", "application/json"],
             ["Authorization", "token " + props.token],
           ],
-          body: formData,
+          body: JSON.stringify(updateProfile),
         }
       );
-      setLoading(false);
       fetchLogin();
     }
     async function fetchLogin() {
@@ -139,9 +144,8 @@ const Profile = (props) => {
         mode: "cors",
         method: "POST",
         headers: [["Content-Type", "application/json"]],
-        body: JSON.stringify(props.loginInfo),
+        body: window.localStorage.getItem("loginInfo"),
       });
-      console.log(props.loginInfo);
 
       if (response.status === 200) {
         const json = await response.json();
@@ -150,7 +154,7 @@ const Profile = (props) => {
           firstname: json.first_name,
           lastname: json.last_name,
           email: json.email,
-          avatar: `http://localhost:8000${json.avatar}`,
+          avatar: json.avatar,
         };
         props.setToken(json.token);
         props.setProfile(profile);
@@ -162,6 +166,8 @@ const Profile = (props) => {
           window.sessionStorage.setItem("profile", JSON.stringify(profile));
         }
         setLoading(false);
+        setSuccess(true);
+        console.log("after", json.token);
       }
     }
   };
@@ -169,6 +175,7 @@ const Profile = (props) => {
     <Box
       sx={{
         width: "100vw",
+        flexDirection: "column",
         minHeight: `calc(100vh - ${props.height}px)`,
         background: "linear-gradient(90deg, #0529ad, #71d6fb)",
         backgroundSize: "200% 200%",
@@ -330,6 +337,13 @@ const Profile = (props) => {
           </Box>
         </Box>
       </Paper>
+      {success && (
+        <Paper elevation={6} sx={{ position: "absolute", bottom: "5%" }}>
+          <Alert severity="success">
+            <strong>Save successfully!</strong>
+          </Alert>
+        </Paper>
+      )}
     </Box>
   );
 };
