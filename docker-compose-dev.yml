@@ -34,14 +34,14 @@ services:
       - ALGORITHM=HS256
       - ACCESS_TOKEN_EXPIRE_MINUTES=30
   postgres:
-    image: postgres:alpine
+    image: postgres
     environment:
       - POSTGRES_PASSWORD=Son[1122002]
       - POSTGRES_DB=BLASK_DB
     volumes:
       - postgres-db:/var/lib/postgresql/data
   redis:
-    image: redis:alpine
+    image: redis:5
 
 volumes:
   postgres-db:
