@@ -147,13 +147,16 @@ const CreateQuiz = (props) => {
         checkError = true;
         message.quizCorrect = message.quizCorrect.concat(`${i + 1} `);
       }
-      if (quizCreate.questions[i].name.trim() === "") {
+      if (
+        quizCreate.questions[i].name.trim() === "" ||
+        quizCreate.questions[i].name.trim() === "Question"
+      ) {
         checkError = true;
         message.quizName = message.quizName.concat(`${i + 1} `);
       }
     }
     if (checkError) {
-      console.log(message);
+      console.log("message", message);
       setLoading(false);
       setOpen(checkError);
       setMessageError(message);
