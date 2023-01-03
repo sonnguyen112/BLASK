@@ -89,7 +89,7 @@ const CreateQuiz = (props) => {
     setOpen(false);
   };
 
-  const handleSave = () => {
+  const handleSave = async () => {
     setLoading(true);
 
     const quizCreate = {
@@ -97,10 +97,22 @@ const CreateQuiz = (props) => {
       description: "No description",
       questions: JSON.parse(JSON.stringify(question)),
     };
-
-    if (imgQuiz.trim() !== "") {
-      quizCreate.imageQuizUrl = imgQuiz.substring(
-        imgQuiz.search("base64,") + 7
+    const getImageToBase64 = async (url) => {
+      const data = await fetch(url);
+      const blob = await data.blob();
+      return new Promise((resolve) => {
+        const reader = new FileReader();
+        reader.readAsDataURL(blob);
+        reader.onloadend = () => {
+          const base64data = reader.result;
+          resolve(base64data);
+        };
+      });
+    };
+    const copyImgQuiz = await getImageToBase64(imgQuiz);
+    if (copyImgQuiz.trim() !== "") {
+      quizCreate.imageQuizUrl = copyImgQuiz.substring(
+        copyImgQuiz.search("base64,") + 7
       );
     }
     var checkError = false;
@@ -111,10 +123,11 @@ const CreateQuiz = (props) => {
       message.title = "Please set the title of quiz.";
     }
     for (let i = 0; i < quizCreate.questions.length; i++) {
-      quizCreate.questions[i].imageQuestionUrl = quizCreate.questions[
-        i
-      ].imageQuestionUrl.substring(
-        quizCreate.questions[i].imageQuestionUrl.search("base64,") + 7
+      const copyImgQuestion = await getImageToBase64(
+        quizCreate.questions[i].imageQuestionUrl
+      );
+      quizCreate.questions[i].imageQuestionUrl = copyImgQuestion.substring(
+        copyImgQuestion.search("base64,") + 7
       );
 
       quizCreate.questions[i].options = quizCreate.questions[i].options.filter(
@@ -145,7 +158,7 @@ const CreateQuiz = (props) => {
       setOpen(checkError);
       setMessageError(message);
     } else {
-      console.log("edit", edit);
+      console.log("edit", edit, quizCreate);
       console.log("slug", slug);
       fetchCreateQuiz(edit, quizCreate);
     }
@@ -166,7 +179,6 @@ const CreateQuiz = (props) => {
       ],
       body: JSON.stringify(quizCreate),
     });
-    console.log(quizCreate);
     setLoading(false);
     navigate("/library");
   }

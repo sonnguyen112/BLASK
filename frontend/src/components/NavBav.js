@@ -64,6 +64,7 @@ function ResponsiveAppBar(props) {
         console.log("logout");
         window.localStorage.removeItem("token");
         window.localStorage.removeItem("profile");
+        window.localStorage.removeItem("remember");
         props.setToken("");
         props.setProfile({
           username: "",

@@ -36,14 +36,40 @@ const NavPages = (props) => {
         <Route path="home" element={<Home token={props.token} />} />
         <Route
           path="library"
-          element={<Library profile={props.profile} token={props.token} />}
+          element={
+            props.token.trim() !== "" ? (
+              <Library profile={props.profile} token={props.token} />
+            ) : (
+              <Login
+                setLoginInfo={props.setLoginInfo}
+                setToken={props.setToken}
+                setProfile={props.setProfile}
+                height={height}
+              />
+            )
+          }
         />
-        <Route path="reports" element={<Reports token={props.token} />} />
+        <Route
+          path="reports"
+          element={
+            props.token.trim() !== "" ? (
+              <Reports token={props.token} />
+            ) : (
+              <Login
+                setLoginInfo={props.setLoginInfo}
+                setToken={props.setToken}
+                setProfile={props.setProfile}
+                height={height}
+              />
+            )
+          }
+        />
         <Route path="signup" element={<Signup height={height} />} />
         <Route
           path="login"
           element={
             <Login
+              setLoginInfo={props.setLoginInfo}
               setToken={props.setToken}
               setProfile={props.setProfile}
               height={height}
@@ -54,7 +80,13 @@ const NavPages = (props) => {
           path="profile"
           element={
             props.token.trim() !== "" ? (
-              <Profile profile={props.profile} height={height} />
+              <Profile
+                profile={props.profile}
+                height={height}
+                loginInfo={props.loginInfo}
+                setToken={props.setToken}
+                setProfile={props.setProfile}
+              />
             ) : (
               <NoPage />
             )

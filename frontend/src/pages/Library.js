@@ -2,10 +2,12 @@ import BLASKItem from "../components/BlaskItem";
 import { useNavigate } from "react-router-dom";
 import { useState, useEffect } from "react";
 import "../App.css";
+import { Backdrop, CircularProgress } from "@mui/material";
 
 const Library = (props) => {
   let navigate = useNavigate();
   const [quizs, setQuizs] = useState(Array(0).fill(null));
+  const [loading, setLoading] = useState(true);
   useEffect(() => {
     async function GetData(url = "") {
       const response = await fetch(url, {
@@ -21,11 +23,13 @@ const Library = (props) => {
       let data = await response.json(); // parses JSON response into native JavaScript objects
       console.log(data);
       setQuizs(data["quiz_list"]);
+      setLoading(false);
     }
     GetData("http://localhost:8000/quiz/api/get_all_quiz");
-  }, []);
+  }, [loading]);
 
   const handleEditQuiz = (index) => {
+    setLoading(true);
     async function fetchQuiz() {
       const response = await fetch(
         "http://localhost:8000/quiz/api/get_one_quiz/" + quizs[index]["slug"],
@@ -39,7 +43,8 @@ const Library = (props) => {
         }
       );
       const editQuiz = await response.json();
-      console.log(editQuiz);
+      console.log("before edit", editQuiz);
+      setLoading(false);
       navigate("/create-quiz", {
         state: { edit: 1, quiz: editQuiz, slug: quizs[index]["slug"] },
       });
@@ -49,6 +54,23 @@ const Library = (props) => {
   };
   const handleDeleteQuiz = (index) => {
     console.log("delete", index);
+    var copyQuizs = [...quizs];
+    copyQuizs.splice(index, 1);
+    async function fetchDeleteQuiz() {
+      const response = await fetch(
+        `http://localhost:8000/quiz/api/delete_one_quiz/${quizs[index]["slug"]}/`,
+        {
+          mode: "cors",
+          method: "DELETE",
+          headers: [
+            ["Content-Type", "application/json"],
+            ["Authorization", "token " + props.token],
+          ],
+        }
+      );
+      setQuizs(copyQuizs);
+    }
+    fetchDeleteQuiz();
   };
 
   async function handleCreateRoom(index) {
@@ -91,9 +113,13 @@ const Library = (props) => {
   }
   return (
     <div className="blask-list">
+      <Backdrop open={loading} sx={{ zIndex: 100 }}>
+        <CircularProgress color="primary" />
+      </Backdrop>
       {quizs.map((item, index) => (
         <BLASKItem
           username={props.profile["username"]}
+          avatar={props.profile.avatar}
           value={item}
           deleteQuiz={() => handleDeleteQuiz(index)}
           editQuiz={() => handleEditQuiz(index)}

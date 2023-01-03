@@ -108,8 +108,15 @@
     outline: none;
     border: none;
 
+	box-shadow: 0 4px #999;
+
     justify-content: left;
 }
+
+.normal-button:active {
+	box-shadow: 0 2px #666;
+	transform: translateY(4px);
+  }
 
 #color0 {
     background-color: #e21b3c;
