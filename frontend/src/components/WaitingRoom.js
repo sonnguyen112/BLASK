@@ -32,7 +32,7 @@ const memberHandler = (message, pin, quiz_info, token_me, token_host, navigate, 
 		setMember([...member, newmessage]);
 	}
 	const onPlay = async () => {
-		client.close();
+		// client.close();
 
 		if(token_host !== token_me) {
 			setTimeout(function(){ navigate('/play', {state: {
