@@ -13,7 +13,7 @@ const Question = (props) => {
             <Timer value={props.value} setTimeInt={props.setTimeInt} timeout={props.timeout}/> 
 			<div className="button-overall">
 				{props.data.options.map((item, index) => (
-					<AnswerPlaying value={item} index={index} onClick={() => props.onClick(index)}></AnswerPlaying>
+					<AnswerPlaying value={item.content} index={index} onClick={() => props.onClick(item.id, item.question)}></AnswerPlaying>
 				))
 				}
 			</div>
