@@ -126,7 +126,7 @@ const Profile = (props) => {
       };
       console.log("avatar", avatar);
       const response = await fetch(
-        "http://localhost:8000/quiz/api/update_profile/",
+        "http://localhost:8000/quiz/api/update_profile",
         {
           mode: "cors",
           method: "PATCH",

@@ -170,8 +170,8 @@ const CreateQuiz = (props) => {
   async function fetchCreateQuiz(edit, quizCreate) {
     const link =
       edit === 1
-        ? `http://localhost:8000/quiz/api/update_quiz/${slug}/`
-        : "http://localhost:8000/quiz/api/create_quiz/";
+        ? `http://localhost:8000/quiz/api/update_quiz/${slug}`
+        : "http://localhost:8000/quiz/api/create_quiz";
     const methodS = edit === 1 ? "PATCH" : "POST";
     const response = await fetch(link, {
       mode: "cors",

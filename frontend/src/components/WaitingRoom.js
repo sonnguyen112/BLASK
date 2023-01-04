@@ -82,7 +82,7 @@ const WaitingRoom = (props) => {
 		client.send(s);
 	};
 	async function closeRoom(pin) {
-		const response = await fetch('http://localhost:8000/room/api/delete_room/' + pin, {
+		const response = await fetch('http://localhost:8000/room/api/delete_room' + pin, {
 			method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
 			mode: 'cors', // no-cors, *cors, same-origin
 			headers: {
