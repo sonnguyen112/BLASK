@@ -23,7 +23,7 @@ const JoinIn = () => {
     }
     async function handleAskJoinRoom() {
         console.log(pin_input)
-        const response = await fetch('http://localhost:8000/room/api/join_room/' + pin_input, {
+        const response = await fetch('http://localhost:8000/room/api/join_room/' + pin_input + '/', {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
             mode: 'cors', // no-cors, *cors, same-origin
             headers: {

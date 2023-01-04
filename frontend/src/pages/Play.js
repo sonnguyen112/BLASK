@@ -85,7 +85,7 @@ const answerHandler = (message, token_me, token_host, client, navigate, setIndex
 const Play = () => {
     const preData = useLocation();
     const navigate = useNavigate();
-    
+
     const [typeRender, setTypeRender] = useState(0);
     /*
         1. Screen question for 5s
@@ -162,7 +162,7 @@ const Play = () => {
                 client.send(s);
             }
             else {
-                setTimeShowTitle(5);
+                setTimeShowTitle(20);
             }
         };
         client.onmessage = (message) => {
@@ -202,15 +202,16 @@ const Play = () => {
 
 
     const sendMesage = function (message) {
+        console.log(message);
         waitForConnection(function () {
             console.log(message);
             client.send(message);
             // if (typeof callback !== 'undefined') {
             //   callback();
             // }
-        }, 500);
+        }, 200);
     };
-    
+
     const waitForConnection = function (callback, interval) {
         if (client.readyState === 1) {
             console.log("kết nối nè")
@@ -223,7 +224,7 @@ const Play = () => {
             }, interval);
         }
     };
-    
+
 
 
 
@@ -240,9 +241,7 @@ const Play = () => {
     }, [time_show_question]);
 
     useEffect(() => {
-        let time_show = time_show_title * 1000
-        console.log(time_show);
-        const interval = setTimeout(() => setTimeShowTitle(0), time_show);
+        const interval = setTimeout(() => setTimeShowTitle(time_show_title - 1), 1000);
         if (time_show_title === 0) {
             let s = '{"type_action": "next","index_next_ques":' + (index_ques + 1).toString() + '}';
             // client.send(s);

@@ -40,7 +40,7 @@ const memberHandler = (message, pin, quiz_info, token_me, token_host, navigate, 
 				name_player: token_me,
 				token_host: token_host,
 				pin: pin,
-			}}); }, 2000);
+			}}); }, 1500);
 		}
 		else {
 			navigate('/play', {state: {
