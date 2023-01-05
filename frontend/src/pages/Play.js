@@ -4,7 +4,10 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import Question from "../components/Question";
 import Questionnaire from "../components/Questionnaire";
 import "../style/play.css";
-
+import {
+    Backdrop,
+    CircularProgress,
+  } from "@mui/material";
 
 var data = [];
 var token_host = "",
@@ -97,6 +100,7 @@ const Play = () => {
     const [time_interval, setTimeInt] = useState(5);
     const [time_show_question, setTimeShowQuestion] = useState(-1);
     const [time_show_title, setTimeShowTitle] = useState(-1);
+    const [loading, setLoading] = useState(true)
 
     // const [token_me, setTokenMe] = useState("");
     // const [token_host, setTokenHost] = useState("");
@@ -155,6 +159,7 @@ const Play = () => {
     useEffect(() => {
         client.onopen = () => {
             console.log("WebSocket Client Connected");
+            setLoading(false)
             console.log(token_host, token_me, client);
             if (token_me !== token_host) {
                 let s = '{ "type_action": "append", "name_player": "' + token_me + '", "avatar": ""}'
@@ -308,6 +313,9 @@ const Play = () => {
         case 0:
             return (
                 <div className="container">
+                    <Backdrop open={loading} sx={{ zIndex: 10 }}>
+                    <CircularProgress color="primary" />
+                    </Backdrop>
                     <div className="questionnaire">
                         {title}
                     </div>
