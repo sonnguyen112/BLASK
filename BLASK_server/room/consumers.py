@@ -1,6 +1,7 @@
 import json
 
 from channels.generic.websocket import AsyncWebsocketConsumer
+from asgiref.sync import sync_to_async
 from .utils import check_answer
 
 
@@ -138,12 +139,13 @@ class PlayConsumer(AsyncWebsocketConsumer):
             question_id = event["question_id"]
             option_id_player_choose = event["option_id_player_choose"]
             remaining_time = event["remaining_time"]
+            is_true = await sync_to_async(check_answer)(question_id, option_id_player_choose)
             # Send message to WebSocket
             await self.send(text_data=json.dumps({
                 "type_action": type_action,
                 'name_player': name_player,
                 "question_id": question_id,
-                "is_true": True,#check_answer(question_id, option_id_player_choose),
+                "is_true": is_true,
                 "remaining_time": remaining_time
             }))
         elif type_action == "score_board":
