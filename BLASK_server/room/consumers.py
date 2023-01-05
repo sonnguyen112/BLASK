@@ -1,6 +1,7 @@
 import json
 
 from channels.generic.websocket import AsyncWebsocketConsumer
+from asgiref.sync import sync_to_async
 from .utils import check_answer
 
 
@@ -143,7 +144,7 @@ class PlayConsumer(AsyncWebsocketConsumer):
                 "type_action": type_action,
                 'name_player': name_player,
                 "question_id": question_id,
-                "is_true": check_answer(question_id, option_id_player_choose),
+                "is_true": sync_to_async(check_answer)(question_id, option_id_player_choose),
                 "remaining_time": remaining_time
             }))
         elif type_action == "score_board":

@@ -154,7 +154,7 @@ const Play = () => {
                 HANDLE SOCKET
     *************************************/
 
-    const client = new W3CWebSocket("ws://127.0.0.1:8000/ws/play/" + preData.state.pin + "/");
+    let client = new W3CWebSocket("ws://127.0.0.1:8000/ws/play/" + preData.state.pin + "/");
 
     useEffect(() => {
         client.onopen = () => {
