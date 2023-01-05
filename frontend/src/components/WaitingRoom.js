@@ -35,12 +35,18 @@ const memberHandler = (message, pin, quiz_info, token_me, token_host, navigate, 
 		// client.close();
 
 		if(token_host !== token_me) {
-			setTimeout(function(){ navigate('/play', {state: {
+			// setTimeout(function(){ navigate('/play', {state: {
+			// 	quiz_info: quiz_info,
+			// 	name_player: token_me,
+			// 	token_host: token_host,
+			// 	pin: pin,
+			// }}); }, 2000);
+			navigate('/play', {state: {
 				quiz_info: quiz_info,
 				name_player: token_me,
 				token_host: token_host,
 				pin: pin,
-			}}); }, 1500);
+			}});
 		}
 		else {
 			navigate('/play', {state: {
