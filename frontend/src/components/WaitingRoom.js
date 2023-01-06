@@ -32,21 +32,15 @@ const memberHandler = (message, pin, quiz_info, token_me, token_host, navigate, 
 		setMember([...member, newmessage]);
 	}
 	const onPlay = async () => {
-		// client.close();
+		client.close();
 
 		if(token_host !== token_me) {
-			// setTimeout(function(){ navigate('/play', {state: {
-			// 	quiz_info: quiz_info,
-			// 	name_player: token_me,
-			// 	token_host: token_host,
-			// 	pin: pin,
-			// }}); }, 2000);
-			navigate('/play', {state: {
+			setTimeout(function(){ navigate('/play', {state: {
 				quiz_info: quiz_info,
 				name_player: token_me,
 				token_host: token_host,
 				pin: pin,
-			}});
+			}}); }, 2000);
 		}
 		else {
 			navigate('/play', {state: {
@@ -88,7 +82,7 @@ const WaitingRoom = (props) => {
 		client.send(s);
 	};
 	async function closeRoom(pin) {
-		const response = await fetch('http://localhost:8000/room/api/delete_room/' + pin, {
+		const response = await fetch('http://localhost:8000/room/api/delete_room' + pin, {
 			method: 'DELETE', // *GET, POST, PUT, DELETE, etc.
 			mode: 'cors', // no-cors, *cors, same-origin
 			headers: {

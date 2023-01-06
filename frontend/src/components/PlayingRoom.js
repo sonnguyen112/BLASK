@@ -9,7 +9,7 @@ import {
     CircularProgress,
   } from "@mui/material";
 
-const answerHandler = (message, token_me, token_host, client, navigate, setIndexQues, setTypeRender, member, setMember, submit, setSubmit) => {
+const answerHandler = (message, token_me, token_host, client, navigate, setIndexQues, setTypeRender, member, setMember, submit, setSubmit, setLoading) => {
     let tmp_message = JSON.parse(message.data);
     console.log(message);
     const onAnswer = (name_player, question_id, is_true, remaining_time) => {
@@ -33,6 +33,7 @@ const answerHandler = (message, token_me, token_host, client, navigate, setIndex
             score: 0
         }
         setMember([...member, newmessage]);
+        setLoading(false)
     }
     const onDelete = (name_player) => {
         console.log(name_player);
@@ -119,7 +120,7 @@ const PlayingRoom = (props) => {
         client.current = new W3CWebSocket("ws://127.0.0.1:8000/ws/play/" + props.pin + "/");
         client.current.onopen = () => {
             console.log("WebSocket client.current Connected");
-            setLoading(false)
+            // setLoading(false)
             console.log(props.token_host, props.token_me, client.current);
             if (props.token_me !== props.token_host) {
                 let s = '{ "type_action": "append", "name_player": "' + props.token_me + '", "avatar": ""}'
@@ -134,7 +135,7 @@ const PlayingRoom = (props) => {
             answerHandler(message, props.token_me, props.token_host, client.current, navigate,
                 setIndexQues, setTypeRender,
                 memberRef.current, setMember,
-                submitRef.current, setSubmit,
+                submitRef.current, setSubmit,setLoading 
             )
         };
 

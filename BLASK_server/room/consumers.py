@@ -17,10 +17,10 @@ class WaitConsumer(AsyncWebsocketConsumer):
 
     async def disconnect(self, close_code):
         # Leave room group
-       await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
-
+        await self.channel_layer.group_discard(self.room_group_name, self.channel_name)
 
     # Receive message from WebSocket
+
     async def receive(self, text_data):
         text_data_json = json.loads(text_data)
         name_player = text_data_json['name_player']
@@ -167,7 +167,7 @@ class PlayConsumer(AsyncWebsocketConsumer):
             }))
         elif type_action == "append":
             name_player = event["name_player"]
-            avatar = event["name_player"]
+            avatar = event["avatar"]
             # Send message to WebSocket
             await self.send(text_data=json.dumps({
                 "type_action": type_action,
@@ -180,3 +180,4 @@ class PlayConsumer(AsyncWebsocketConsumer):
                 "type_action": type_action,
                 "name_player": name_player,
             }))
+
