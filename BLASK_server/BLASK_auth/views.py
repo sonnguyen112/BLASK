@@ -7,6 +7,7 @@ from .models import UserProfile
 from django.contrib.auth import authenticate
 from rest_framework.authtoken.models import Token
 from .dtos import SignInDTO
+import re
 
 # Create your views here.
 
@@ -19,6 +20,21 @@ def sign_up(request):
     password = request.data.get('password')
     confirm_password = request.data.get('password_confirm')
     email = request.data.get('email')
+
+    regex_email = r'\b[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Z|a-z]{2,}\b'
+
+    if re.fullmatch(regex_email, email) == None:
+        return Response({
+            "message": "Email is invalid",
+        }, status=status.HTTP_400_BAD_REQUEST)
+
+    regex_pass = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$"
+    pat = re.compile(regex_pass)
+
+    if re.search(pat, password) == None:
+        return Response({
+            "message": "Password is invalid",
+        }, status=status.HTTP_400_BAD_REQUEST)
 
     if password == confirm_password:
         if User.objects.filter(username=username).exists():
@@ -52,10 +68,15 @@ def sign_in(request):
         data = request.data
         user = authenticate(
             request, username=data["username"], password=data["password"])
-        token, created = Token.objects.get_or_create(user=user)
-        user_profile = UserProfile.objects.get(user=user)
-        dto = SignInDTO(token, user, user_profile)
-        return Response(vars(dto), status=status.HTTP_200_OK)
+        if user:
+            token, created = Token.objects.get_or_create(user=user)
+            user_profile = UserProfile.objects.get(user=user)
+            dto = SignInDTO(token, user, user_profile)
+            return Response(vars(dto), status=status.HTTP_200_OK)
+        else:
+            return Response({
+            "message": "Username or password is invalid",
+            }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
         return Response({
             "message": str(e),

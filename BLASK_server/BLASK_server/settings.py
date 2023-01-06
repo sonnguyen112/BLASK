@@ -165,7 +165,10 @@ CORS_ALLOWED_ORIGINS = [
     "http://localhost:3001",
     "http://localhost:3000",
     "https://67fd-113-172-80-141.ap.ngrok.io",
-    "http://27.74.18.72/",
+    "https://ac9c-14-186-55-181.ap.ngrok.io",
+    "https://a409-2402-800-f801-100-20b0-93c-4884-8368.ap.ngrok.io",
+    "http://5c74-14-186-55-181.ap.ngrok.io",
+    "http://27.74.18.72",
     "http://blaskweb.ddns.net",
     "https://blaskweb.ddns.net"
 ]

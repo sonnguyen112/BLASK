@@ -58,7 +58,7 @@ const Library = (props) => {
     copyQuizs.splice(index, 1);
     async function fetchDeleteQuiz() {
       const response = await fetch(
-        `http://localhost:8000/quiz/api/delete_one_quiz/${quizs[index]["slug"]}/`,
+        `http://localhost:8000/quiz/api/delete_one_quiz/${quizs[index]["slug"]}`,
         {
           mode: "cors",
           method: "DELETE",

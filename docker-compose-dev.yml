@@ -2,7 +2,6 @@ version: '3'
 services:
   frontend:
     build: ./frontend
-    image: khoirobert/blask_frontend
     depends_on:
       - api
     ports:
@@ -11,14 +10,13 @@ services:
     #   - ./frontend:/home/BLASK_FE/:ro
   api:
     build: ./BLASK_server
-    image: khoirobert/blask
     depends_on:
       - postgres
       - redis
     ports:
       - 8000:8000
     volumes:
-       - media:/mediafiles/
+      - media:/home/BLASK/mediafiles/
     # volumes:
     #   - ./BLASK_server/:/home/BLASK/:ro
     # command: python manage.py runserver 0.0.0.0:8000

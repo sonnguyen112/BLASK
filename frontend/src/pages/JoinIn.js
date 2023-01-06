@@ -7,6 +7,7 @@ const JoinIn = () => {
     const [name_input, set_name_input] = useState("")
     const [pin_input, set_pin_input] = useState("")
     const [is_name_input, setCheck] = useState(false);
+    const [loading, setLoading] = useState(false)
     const onPINChange = event => {
         set_pin_input(event.target.value);
     }
@@ -22,6 +23,7 @@ const JoinIn = () => {
         }
     }
     async function handleAskJoinRoom() {
+        setLoading(true);
         console.log(pin_input)
         const response = await fetch('http://localhost:8000/room/api/join_room/' + pin_input, {
             method: 'GET', // *GET, POST, PUT, DELETE, etc.
@@ -33,7 +35,7 @@ const JoinIn = () => {
 
         let data = await response.json()
         data.pin = pin_input;
-        if (data.token_host !== "") {
+        if (response.status !== 404) {
             navigate('/room', {
                 state: {
                     quiz_info: data,
@@ -73,7 +75,7 @@ const JoinIn = () => {
                     <div className="square"></div>
                     <div className="circle"></div>
                     <div className="blur">
-
+        
                     </div>
                     <div className="joinin-form">
                         <div className="joinin-logo-blask">
@@ -82,7 +84,8 @@ const JoinIn = () => {
                         <div className="joinin-realform">
                             <input name={"gameId"} placeholder="Game PIN" defaultValue="" inputMode="numeric" onChange={onPINChange} />
                             <button onClick={handleAskJoinRoom}>
-                                Enter
+                                {!loading && "Enter"}
+                                {loading && <div class="loader-5 center"><span></span></div>}
                             </button>
                         </div>
                     </div>
