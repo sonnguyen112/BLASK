@@ -83,10 +83,15 @@ class PlayConsumer(AsyncWebsocketConsumer):
             )
         elif type_action == "score_board":
             # Send message to room group
+            name_player = text_data_json['name_player']
+            rank = text_data_json["rank"]
+            score = text_data_json["score"]
             await self.channel_layer.group_send(
                 self.room_group_name, {
                     "type": "play_message",
-                    "type_action": type_action
+                    "type_action": type_action,
+                    "rank": rank,
+                    "score": score
                     }
             )
         elif type_action == "next":
@@ -150,8 +155,14 @@ class PlayConsumer(AsyncWebsocketConsumer):
             }))
         elif type_action == "score_board":
             # Send message to WebSocket
+            name_player = event["name_player"]
+            rank = event["rank"]
+            score = event["score"]
             await self.send(text_data=json.dumps({
                 "type_action": type_action,
+                "name_player": name_player,
+                "rank": rank,
+                "score": score
             }))
         elif type_action == "next":
             index_next_ques = event["index_next_ques"]
