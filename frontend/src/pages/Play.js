@@ -10,6 +10,7 @@ const Room = (props) => {
         data.push({
             num_of_second: location.state.quiz_info.list_question[i].num_of_second,
             score: location.state.quiz_info.list_question[i].score,
+            q_id: location.state.quiz_info.list_question[i].id,
             question: location.state.quiz_info.list_question[i].description,
             options: location.state.quiz_info.list_option.filter(x => x.question === location.state.quiz_info.list_question[i].id)
         });
