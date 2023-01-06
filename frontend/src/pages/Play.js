@@ -22,7 +22,8 @@ const Room = (props) => {
                 pin={location.state.pin}
                 token_me={location.state.name_player}
                 token_host={location.state.token_host}
-                data={data}/>}
+                data={data}
+                old_member_size={location.state.old_member_size}/>}
         </div>
     );
 }

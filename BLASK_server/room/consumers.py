@@ -114,9 +114,9 @@ class PlayConsumer(AsyncWebsocketConsumer):
             await self.channel_layer.group_send(
                 self.room_group_name, {
                     "type": "play_message",
-                    "type_action": type_action,
                     "name_player": name_player,
-                    "avatar" : avatar
+                    "avatar" : avatar,
+                    "type_action": type_action,
                     }
             )
         elif type_action == "timeout":

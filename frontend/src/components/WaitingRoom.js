@@ -34,22 +34,30 @@ const memberHandler = (message, pin, quiz_info, token_me, token_host, navigate, 
 	const onPlay = async () => {
 		client.close();
 
-		if(token_host !== token_me) {
-			setTimeout(function(){ navigate('/play', {state: {
-				quiz_info: quiz_info,
-				name_player: token_me,
-				token_host: token_host,
-				pin: pin,
-			}}); }, 2000);
-		}
-		else {
-			navigate('/play', {state: {
-				quiz_info: quiz_info,
-				name_player: token_me,
-				token_host: token_host,
-				pin: pin,
-			}});
-		}
+		// if(token_host !== token_me) {
+		// 	setTimeout(function(){ navigate('/play', {state: {
+		// 		quiz_info: quiz_info,
+		// 		name_player: token_me,
+		// 		token_host: token_host,
+		// 		pin: pin,
+		// 	}}); }, 2000);
+		// }
+		// else {
+		// 	navigate('/play', {state: {
+		// 		quiz_info: quiz_info,
+		// 		name_player: token_me,
+		// 		token_host: token_host,
+		// 		pin: pin,
+		// 	}});
+		// }
+
+		navigate('/play', {state: {
+			quiz_info: quiz_info,
+			name_player: token_me,
+			token_host: token_host,
+			pin: pin,
+			old_member_size : member.length
+		}});
 	}
 	switch (tmp_message.type_action) {
 		case "append":
