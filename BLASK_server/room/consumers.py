@@ -106,11 +106,13 @@ class PlayConsumer(AsyncWebsocketConsumer):
                     }
             )
         elif type_action == "delete":
+            name_player = text_data_json['name_player']
             # Send message to room group
             await self.channel_layer.group_send(
                 self.room_group_name, {
                     "type": "play_message",
-                    "type_action": type_action
+                    "type_action": type_action,
+                    "name_player": name_player
                     }
             )
         elif type_action == "append":
@@ -173,9 +175,11 @@ class PlayConsumer(AsyncWebsocketConsumer):
                 "index_next_ques": index_next_ques
             }))
         elif type_action == "delete":
+            name_player = event["name_player"]
             # Send message to WebSocket
             await self.send(text_data=json.dumps({
                 "type_action": type_action,
+                "name_player": name_player,
             }))
         elif type_action == "append":
             name_player = event["name_player"]
