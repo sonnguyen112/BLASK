@@ -68,10 +68,15 @@ def sign_in(request):
         data = request.data
         user = authenticate(
             request, username=data["username"], password=data["password"])
-        token, created = Token.objects.get_or_create(user=user)
-        user_profile = UserProfile.objects.get(user=user)
-        dto = SignInDTO(token, user, user_profile)
-        return Response(vars(dto), status=status.HTTP_200_OK)
+        if user:
+            token, created = Token.objects.get_or_create(user=user)
+            user_profile = UserProfile.objects.get(user=user)
+            dto = SignInDTO(token, user, user_profile)
+            return Response(vars(dto), status=status.HTTP_200_OK)
+        else:
+            return Response({
+            "message": "Username or password is invalid",
+            }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
         return Response({
             "message": str(e),
