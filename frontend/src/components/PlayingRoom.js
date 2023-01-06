@@ -28,143 +28,74 @@ const PlayingRoom = (props) => {
     navigate("/");
   };
 
-	useEffect(() => {
-		client.current = new W3CWebSocket(
-			"ws://127.0.0.1:8000/ws/play/" + props.pin + "/"
-		);
+  const handleChoose = (option_id, question_id) => {
+    if (props.token_host !== props.token_me) {
+      let s = {
+        type_action: "answer",
+        name_player: props.token_me,
+        question_id: question_id,
+        option_id_player_choose: option_id,
+        remaining_time: time_interval,
+      };
+      // client.current.send(JSON.stringify(s));
+      sendMesage(JSON.stringify(s));
+      setTypeRender(3);
+    }
+  };
 
-		const handleTabClose = event => {
-			event.preventDefault();
+  const sendMesage = function (message) {
+    waitForConnection(function () {
+      console.log(message);
+      props.client.send(message);
+      // if (typeof callback !== 'undefined') {
+      //   callback();
+      // }
+    }, 500);
+  };
 
-			console.log('beforeunload event triggered');
+  const waitForConnection = function (callback, interval) {
+    if (props.client.readyState === 1) {
+      console.log("kết nối nè");
+      callback();
+    } else {
+      console.log("chưa kết nối nè");
+      // optional: implement backoff for interval here
+      setTimeout(function () {
+        waitForConnection(callback, interval);
+      }, interval);
+    }
+  };
 
-			return (event.returnValue = 'Are you sure you want to exit?');
-		};
-
-		const handleKickPlayer = () => {
-			let s = '{ "type_action": "delete","name_player": "' + props.token_me + '}'
-
-			sendMesage(s);
-		}
-
-		window.addEventListener('beforeunload', handleTabClose);
-		window.addEventListener('unload', handleKickPlayer);
-
-		client.current.onopen = () => {
-			console.log("WebSocket client.current Connected");
-			// setLoading(false)
-			console.log(props.token_host, props.token_me, client.current);
-			if (props.token_me !== props.token_host) {
-				let s = { type_action: "append", name_player: props.token_me, avatar: "" };
-				console.log(JSON.stringify(s));
-				client.current.send(JSON.stringify(s));
-			} else {
-				setTimeShowTitle(10);
-			}
-		};
-
-		 return () => {
-			window.removeEventListener('beforeunload', handleTabClose);
-			window.removeEventListener('unload', handleKickPlayer);
-		//     console.log("BAO PRO");
-		//     client.current.close();
-		//     if (client.current.readyState === 1) { // <-- This is important
-		//         client.current.close();
-		//     }
-		// };
-	}, []);
-
-	useEffect(() => {
-		client.current.onmessage = (message) => {
-			console.log("hahaha", message);
-			answerHandler(
-				message,
-				props.token_me,
-				props.token_host,
-				client.current,
-				navigate,
-				setIndexQues,
-				setTypeRender,
-				memberRef.current,
-				setMember,
-				submitRef.current,
-				setSubmit,
-				setLoading,
-				props.old_member_size,
-				props.data,
-				setRankScore
-			);
-		};
-	});
-
-	const handleChoose = (option_id, question_id) => {
-		if (props.token_host !== props.token_me) {
-			let s = {
-				type_action: "answer",
-				name_player: props.token_me,
-				question_id: question_id,
-				option_id_player_choose: option_id,
-				remaining_time: time_interval,
-			};
-			// client.current.send(JSON.stringify(s));
-			sendMesage(JSON.stringify(s));
-			setTypeRender(3);
-		}
-	};
-
-	const sendMesage = function (message) {
-		waitForConnection(function () {
-			console.log(message);
-			client.current.send(message);
-			// if (typeof callback !== 'undefined') {
-			//   callback();
-			// }
-		}, 500);
-	};
-
-	const waitForConnection = function (callback, interval) {
-		if (client.current.readyState === 1) {
-			console.log("kết nối nè");
-			callback();
-		} else {
-			console.log("chưa kết nối nè");
-			// optional: implement backoff for interval here
-			setTimeout(function () {
-				waitForConnection(callback, interval);
-			}, interval);
-		}
-	};
-
-	///                     THIS IS USED FOR TIME PROCESSING
-	useEffect(() => {
-		const interval = setTimeout(
-			() => setTimeShowQuestion(time_show_question - 1),
-			1000
-		);
+  ///                     THIS IS USED FOR TIME PROCESSING
+  useEffect(() => {
+    const interval = setTimeout(
+      () => setTimeShowQuestion(time_show_question - 1),
+      1000
+    );
 
     if (time_show_question === 0) {
       handleShowQuesnAns();
       clearTimeout(interval);
     }
 
-		return () => clearTimeout(interval);
-	}, [time_show_question]);
+    return () => clearTimeout(interval);
+  }, [time_show_question]);
 
-	useEffect(() => {
-		const interval = setTimeout(
-			() => setTimeShowTitle(time_show_title - 1),
-			1000
-		);
-		if (time_show_title === 0) {
-			let s =
-				'{"type_action": "next","index_next_ques":' +
-				(index_ques + 1).toString() +
-				"}";
-			// client.current.send(s);
-			sendMesage(s);
-			setSubmit([]);
-			clearTimeout(interval);
-		}
+  useEffect(() => {
+    const interval = setTimeout(
+      () => setTimeShowTitle(time_show_title - 1),
+      1000
+    );
+    if (time_show_title === 0 && props.token_host === props.token_me) {
+      let s =
+        '{"type_action": "next","index_next_ques":' +
+        (props.index_ques + 1).toString() +
+        "}";
+      // client.current.send(s);
+      sendMesage(s);
+      props.setSubmit([]);
+      clearTimeout(interval);
+    }
 
     return () => clearTimeout(interval);
   }, [time_show_title]);
