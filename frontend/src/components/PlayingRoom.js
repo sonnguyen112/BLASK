@@ -4,7 +4,7 @@ import { w3cwebsocket as W3CWebSocket } from "websocket";
 import Question from "../components/Question";
 import Questionnaire from "../components/Questionnaire";
 import "../style/play.css";
-import { Backdrop, CircularProgress } from "@mui/material";
+import { Backdrop, Button, CircularProgress } from "@mui/material";
 
 const answerHandler = (
 	message,
@@ -56,6 +56,7 @@ const answerHandler = (
 	};
 	const onAppend = (name_player, avatar) => {
 		let names = [...member].filter(x => x.name_player)
+		console.log(names);
 		let set = new Set(names)
 		if (set.size === old_member_size) {
 			return
@@ -173,6 +174,30 @@ const PlayingRoom = (props) => {
 		}
 	});
 
+	const sendMesage = function (message) {
+		waitForConnection(function () {
+			console.log(message);
+			client.current.send(message);
+			// if (typeof callback !== 'undefined') {
+			//   callback();
+			// }
+		}, 500);
+	};
+
+	const waitForConnection = function (callback, interval) {
+		if (client.current.readyState === 1) {
+			console.log("kết nối nè");
+			callback();
+		} else {
+			console.log("chưa kết nối nè");
+			// optional: implement backoff for interval here
+			setTimeout(function () {
+				waitForConnection(callback, interval);
+			}, interval);
+		}
+	};
+
+
 	/*************************************
 				  HANDLE SOCKET
 	  *************************************/
@@ -181,6 +206,24 @@ const PlayingRoom = (props) => {
 		client.current = new W3CWebSocket(
 			"ws://127.0.0.1:8000/ws/play/" + props.pin + "/"
 		);
+
+		const handleTabClose = event => {
+			event.preventDefault();
+
+			console.log('beforeunload event triggered');
+
+			return (event.returnValue = 'Are you sure you want to exit?');
+		};
+
+		const handleKickPlayer = () => {
+			let s = '{ "type_action": "delete","name_player": "' + props.token_me + '}'
+
+			sendMesage(s);
+		}
+
+		window.addEventListener('beforeunload', handleTabClose);
+		window.addEventListener('unload', handleKickPlayer);
+
 		client.current.onopen = () => {
 			console.log("WebSocket client.current Connected");
 			// setLoading(false)
@@ -194,13 +237,15 @@ const PlayingRoom = (props) => {
 			}
 		};
 
-		// return () => {
+		 return () => {
+			window.removeEventListener('beforeunload', handleTabClose);
+			window.removeEventListener('unload', handleKickPlayer);
 		//     console.log("BAO PRO");
 		//     client.current.close();
 		//     if (client.current.readyState === 1) { // <-- This is important
 		//         client.current.close();
 		//     }
-		// };
+		};
 	}, []);
 
 	useEffect(() => {
@@ -241,28 +286,9 @@ const PlayingRoom = (props) => {
 		}
 	};
 
-	const sendMesage = function (message) {
-		waitForConnection(function () {
-			console.log(message);
-			client.current.send(message);
-			// if (typeof callback !== 'undefined') {
-			//   callback();
-			// }
-		}, 500);
-	};
-
-	const waitForConnection = function (callback, interval) {
-		if (client.current.readyState === 1) {
-			console.log("kết nối nè");
-			callback();
-		} else {
-			console.log("chưa kết nối nè");
-			// optional: implement backoff for interval here
-			setTimeout(function () {
-				waitForConnection(callback, interval);
-			}, interval);
-		}
-	};
+	const goHome = () => {
+		navigate("/");
+	}
 
 	///                     THIS IS USED FOR TIME PROCESSING
 	useEffect(() => {
@@ -462,6 +488,9 @@ const PlayingRoom = (props) => {
 		case 5:
 			return props.token_host === props.token_me ? (
 				<div className="podium">
+					<Button onClick={goHome} sx={{ backgroundColor: "#fefefe" }}>
+						Next
+					</Button>
 					<div className="podium__item">
 						<div className="txt-non">
 							{member.length >= 2 ? member[1].name_player : ""}
@@ -487,7 +516,10 @@ const PlayingRoom = (props) => {
 					</div>
 
 					<div className="podium__item">
-						<div className="txt">
+						<Button onClick={goHome} sx={{ backgroundColor: "#fefefe" }}>
+							Next
+						</Button>
+						<div className="txt-non">
 							{member.length >= 3 ? member[2].name_player : ""}
 						</div>
 						<div className="third txt-non">

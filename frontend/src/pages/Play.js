@@ -3,7 +3,7 @@ import "../style/room.css";
 import {useLocation} from 'react-router-dom';
 import PlayingRoom from "../components/PlayingRoom";
 
-const Room = (props) => {
+const Play = (props) => {
     const location = useLocation();
     let data = [];
     for (let i = 0; i < location.state.quiz_info.list_question.length; i++) {
@@ -29,4 +29,4 @@ const Room = (props) => {
     );
 }
 
-export default Room;
+export default Play;
