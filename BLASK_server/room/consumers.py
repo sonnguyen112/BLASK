@@ -91,7 +91,8 @@ class PlayConsumer(AsyncWebsocketConsumer):
                     "type": "play_message",
                     "type_action": type_action,
                     "rank": rank,
-                    "score": score
+                    "score": score,
+                    "name_player": name_player
                     }
             )
         elif type_action == "next":
