@@ -28,7 +28,7 @@ def sign_up(request):
             "message": "Email is invalid",
         }, status=status.HTTP_400_BAD_REQUEST)
 
-    regex_pass = "^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!#%*?&]{6,20}$"
+    regex_pass = """^(?=.*[a-z])(?=.*[A-Z])(?=.*\d)(?=.*[@$!%*#?&,./;"'\[\]\\|])[A-Za-z\d@$!%*#?&,./;"'\[\]\\|]{6,20}$"""
     pat = re.compile(regex_pass)
 
     if re.search(pat, password) == None:
@@ -75,7 +75,7 @@ def sign_in(request):
             return Response(vars(dto), status=status.HTTP_200_OK)
         else:
             return Response({
-            "message": "Username or password is invalid",
+                "message": "Username or password is invalid",
             }, status=status.HTTP_401_UNAUTHORIZED)
     except Exception as e:
         return Response({

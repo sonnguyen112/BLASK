@@ -27,7 +27,7 @@ function Copyright(props) {
       {...props}
     >
       {"Copyright © "}
-      <Link color="inherit" href="http://localhost:3000">
+      <Link color="inherit" href="http://localhost:3000/">
         BLASK
       </Link>{" "}
       {new Date().getFullYear()}
@@ -227,10 +227,7 @@ export default function Login(props) {
               </Button>
 
               {errorMessage && (
-                <Alert
-                  severity="error"
-                  sx={{ m: 2, width: { md: "400px", xl: "600px" } }}
-                >
+                <Alert severity="error" sx={{ m: 2, width: "inherit" }}>
                   <AlertTitle>Error</AlertTitle>
                   <Typography variant="body2">
                     Username or Password are not correct

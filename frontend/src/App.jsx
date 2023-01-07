@@ -7,7 +7,6 @@ import Room from "./pages/Room";
 import JoinIn from "./pages/JoinIn";
 import NavPages from "./pages/NavPages";
 import "./App.css";
-import Play from "./pages/Play";
 import LearderBoard from "./components/LeaderBoard";
 function App() {
   const emptyProfile = {
@@ -56,7 +55,6 @@ function App() {
         />
         <Route path="room" element={<Room />} />
         <Route path="joinin" element={<JoinIn />} />
-        <Route path="play" element={<Play />} />
         <Route path="ld" element={<LearderBoard />} />
       </Routes>
     </BrowserRouter>
