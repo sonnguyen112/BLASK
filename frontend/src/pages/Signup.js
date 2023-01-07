@@ -49,6 +49,7 @@ export default function SignUp(props) {
     name: "",
     password: "",
     email: "",
+    checkinfo: "",
     check: false,
   });
 
@@ -67,6 +68,7 @@ export default function SignUp(props) {
       password: "",
       username: "",
       email: "",
+      checkinfo: "",
       check: false,
     };
     if (firstname.length === 0 || lastname.length === 0) {
@@ -96,14 +98,13 @@ export default function SignUp(props) {
       message.email = "Your email is incorrect.\n";
     }
 
-    setErrorMessage(message);
-
     if (!message.check) {
       sendDataSignup();
     } else {
       setLoading(false);
     }
 
+    setErrorMessage(message);
     function sendDataSignup() {
       const signUpData = {
         username: username,
@@ -123,11 +124,21 @@ export default function SignUp(props) {
           body: JSON.stringify(signUpData),
         });
         const json = await response.json();
-
-        console.log(`signup2 ${json}`);
-        console.log(`signup1${JSON.stringify(json)}`);
-        setLoading(false);
-        navigate("/login");
+        if (response.status === 201) {
+          console.log(`signup2 ${json}`);
+          console.log(`signup1${JSON.stringify(json)}`);
+          setLoading(false);
+          navigate("/login");
+        } else {
+          if (response.status === 409) {
+            message.checkinfo = json.message;
+          } else {
+            message.password =
+              "Password must have at least 1 special character, 1 upper letter, 1 lowwer letter, 1 number.";
+          }
+          message.check = true;
+          setLoading(false);
+        }
       }
       fetchSignUp();
     }
@@ -304,6 +315,9 @@ export default function SignUp(props) {
                   sx={{ m: 2, width: { md: "400px", xl: "600px" } }}
                 >
                   <AlertTitle>Error</AlertTitle>
+                  <Typography variant="body2">
+                    {errorMessage.checkinfo}
+                  </Typography>
                   <Typography variant="body2">
                     {errorMessage.username}
                   </Typography>
